@@ -763,6 +763,10 @@ def serve_static_or_page(filename):
     Handles CSS, JS, images, HTML pages with advanced error logging
     """
     try:
+        # Special handling for root route variations
+        if filename in ['', 'index', 'home']:
+            return index()
+        
         # Check if it's a static file in static directories
         static_dirs = ['css', 'js', 'assets']
         for directory in static_dirs:
@@ -786,11 +790,11 @@ def serve_static_or_page(filename):
         
         # If no match found, log and return 404
         app.logger.warning(f"File not found: {filename}")
-        return '', 404
+        return index(), 404
     
     except Exception as e:
         app.logger.error(f"Error serving {filename}: {e}")
-        return '', 500
+        return index(), 500
 
 # Ensure comprehensive file availability
 def copy_html_files():
@@ -827,6 +831,72 @@ def copy_html_files():
 with app.app_context():
     copy_html_files()
     app.logger.info("Comprehensive HTML file management initialized")
+
+# Root Route with Comprehensive Handling
+@app.route('/')
+def index():
+    """
+    Serve the default index page with multiple fallback strategies
+    """
+    try:
+        # Priority order for index pages
+        index_pages = [
+            'index.html',      # Default French version
+            'index_en.html',   # English version fallback
+            'rentals.html'     # Final fallback
+        ]
+        
+        for page in index_pages:
+            try:
+                return render_template(page)
+            except TemplateNotFound:
+                app.logger.warning(f"Index page not found: {page}")
+        
+        # Absolute last resort
+        return "Welcome to CarRent Comores", 200
+    
+    except Exception as e:
+        app.logger.error(f"Critical error serving root route: {e}")
+        return "Service Unavailable", 503
+
+# Ensure index page is always available
+def ensure_index_page():
+    """
+    Create minimal index page if not exists
+    """
+    import os
+    
+    index_files = [
+        'index.html', 
+        'index_en.html'
+    ]
+    
+    for index_file in index_files:
+        file_path = os.path.join(os.getcwd(), index_file)
+        if not os.path.exists(file_path):
+            try:
+                with open(file_path, 'w') as f:
+                    f.write(f"""
+<!DOCTYPE html>
+<html lang="{'en' if '_en' in index_file else 'fr'}">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRent Comores</title>
+</head>
+<body>
+    <h1>Welcome to CarRent Comores</h1>
+    <p>Temporary placeholder page</p>
+</body>
+</html>
+""")
+                app.logger.info(f"Created placeholder {index_file}")
+            except Exception as e:
+                app.logger.error(f"Failed to create {index_file}: {e}")
+
+# Initialize index page during app startup
+with app.app_context():
+    ensure_index_page()
+    app.logger.info("Index page initialization complete")
 
 # Route to add a new sales vehicle
 @app.route('/add_sales_vehicle', methods=['POST'])
