@@ -29,18 +29,27 @@ app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798'
 # Ensure instance folder exists for database
 os.makedirs('instance', exist_ok=True)
 
+# Enhanced Database Configuration Logging
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Database Configuration
 database_config = {
     'drivername': 'postgresql+psycopg2',
-    'username': 'carrent_user',
-    'password': 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs',
-    'host': 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com',
+    'username': os.environ.get('DB_USERNAME', 'carrent_user'),
+    'password': os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs'),
+    'host': os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com'),
     'port': 5432,
-    'database': 'carrent_ak7c',
+    'database': os.environ.get('DB_NAME', 'carrent_ak7c'),
     'query': {
         'sslmode': 'require'  # Force SSL connection
     }
 }
+
+# Log connection details (be cautious with sensitive info)
+logger.info(f"Connecting to database: {database_config['host']}/{database_config['database']}")
+logger.info(f"Username: {database_config['username']}")
 
 # Construct SQLAlchemy database URL
 from sqlalchemy.engine.url import URL
@@ -55,9 +64,17 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_size': 10,
     'max_overflow': 20,
     'connect_args': {
-        'sslmode': 'require'  # Additional SSL enforcement
+        'sslmode': 'require',
+        'application_name': 'CarRent Comores App'
     }
 }
+
+# Additional logging for connection debugging
+def log_sqlalchemy_events():
+    import logging
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+log_sqlalchemy_events()
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
