@@ -31,12 +31,15 @@ os.makedirs('instance', exist_ok=True)
 
 # Database Configuration
 database_config = {
-    'drivername': 'postgresql',
+    'drivername': 'postgresql+psycopg2',
     'username': 'carrent_user',
     'password': 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs',
     'host': 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com',
     'port': 5432,
-    'database': 'carrent_ak7c'
+    'database': 'carrent_ak7c',
+    'query': {
+        'sslmode': 'require'  # Force SSL connection
+    }
 }
 
 # Construct SQLAlchemy database URL
@@ -50,7 +53,10 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
     'pool_recycle': 300,
     'pool_size': 10,
-    'max_overflow': 20
+    'max_overflow': 20,
+    'connect_args': {
+        'sslmode': 'require'  # Additional SSL enforcement
+    }
 }
 
 # Initialize SQLAlchemy

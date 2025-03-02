@@ -10,7 +10,7 @@ services:
       - key: FLASK_DEBUG
         value: "False"
       - key: DATABASE_URL
-        value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c
+        value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c?sslmode=require
 
 databases:
   - name: carrent-db
