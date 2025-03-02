@@ -692,36 +692,62 @@ def sales_management():
     return send_file('sales_management.html')
 
 # Comprehensive HTML Page and Static File Routing
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/<page>.html')
 def serve_html_page(page):
     """
-    Dynamically serve HTML pages with error handling
-    Supports multilingual and different page variations
+    Dynamically serve HTML pages with enhanced flexibility
+    Supports multilingual, variations, and special pages
     """
     try:
-        # List of valid pages to prevent directory traversal
+        # Expanded list of valid pages with variations
         valid_pages = [
+            # Base pages
             'index', 'index_en', 
             'rentals', 'rentals_en', 
-            'sales', 
-            'about', 
-            'contact', 
-            'dashboard'
+            'sales', 'sales_en',
+            'about', 'about_en',
+            'contact', 'contact_en',
+            'dashboard', 'dashboard_en',
+            
+            # Special pages
+            'airport-transfer',
+            'admin-login',
+            
+            # Potential additional variations
+            'services', 'services_en',
+            'fleet', 'fleet_en'
         ]
         
+        # Normalize page name to handle variations
+        normalized_page = page.lower()
+        
         # Check if requested page is valid
-        if page not in valid_pages:
+        if normalized_page not in valid_pages:
             app.logger.warning(f"Attempted to access invalid page: {page}")
             return render_template('index.html'), 404
         
-        # Try to render the specific page, fallback to index if not found
+        # Try to render the specific page, with fallback mechanisms
         try:
-            return render_template(f'{page}.html')
+            # First, try exact match
+            return render_template(f'{normalized_page}.html')
         except TemplateNotFound:
+            # Fallback to base language or index
+            fallback_pages = {
+                'sales_en': 'sales.html',
+                'about_en': 'about.html',
+                'index_en': 'index.html',
+                'rentals_en': 'rentals.html',
+                'contact_en': 'contact.html',
+                'dashboard_en': 'dashboard.html'
+            }
+            
+            if normalized_page in fallback_pages:
+                try:
+                    return render_template(fallback_pages[normalized_page])
+                except TemplateNotFound:
+                    pass
+            
+            # Final fallback to index
             app.logger.error(f"Template not found: {page}.html")
             return render_template('index.html'), 404
     
@@ -729,12 +755,12 @@ def serve_html_page(page):
         app.logger.error(f"Error serving page {page}: {e}")
         return render_template('index.html'), 500
 
-# Enhanced Static File Serving with Multilingual Support
+# Enhanced Static File Serving with Comprehensive Support
 @app.route('/<path:filename>')
 def serve_static_or_page(filename):
     """
     Comprehensive static file and page serving
-    Handles CSS, JS, images, HTML pages with error logging
+    Handles CSS, JS, images, HTML pages with advanced error logging
     """
     try:
         # Check if it's a static file in static directories
@@ -749,6 +775,15 @@ def serve_static_or_page(filename):
             page_name = filename.replace('.html', '')
             return serve_html_page(page_name)
         
+        # Additional handling for special routes
+        special_routes = {
+            'airport-transfer.html': 'services.html',
+            'admin-login.html': 'dashboard.html'
+        }
+        
+        if filename in special_routes:
+            return render_template(special_routes[filename])
+        
         # If no match found, log and return 404
         app.logger.warning(f"File not found: {filename}")
         return '', 404
@@ -757,18 +792,30 @@ def serve_static_or_page(filename):
         app.logger.error(f"Error serving {filename}: {e}")
         return '', 500
 
-# Ensure all HTML files are in the root directory for Render deployment
+# Ensure comprehensive file availability
 def copy_html_files():
     """
     Ensure all HTML files are accessible for deployment
+    Includes variations and special pages
     """
     import shutil
     
     html_files = [
+        # Base pages
         'index.html', 'index_en.html',
         'rentals.html', 'rentals_en.html',
-        'sales.html', 'about.html', 
-        'contact.html', 'dashboard.html'
+        'sales.html', 'sales_en.html',
+        'about.html', 'about_en.html',
+        'contact.html', 'contact_en.html',
+        'dashboard.html', 'dashboard_en.html',
+        
+        # Special pages
+        'airport-transfer.html',
+        'admin-login.html',
+        
+        # Additional pages
+        'services.html', 'services_en.html',
+        'fleet.html', 'fleet_en.html'
     ]
     
     for file in html_files:
@@ -779,7 +826,7 @@ def copy_html_files():
 # Initialize file management during app startup
 with app.app_context():
     copy_html_files()
-    app.logger.info("HTML file management initialized")
+    app.logger.info("Comprehensive HTML file management initialized")
 
 # Route to add a new sales vehicle
 @app.route('/add_sales_vehicle', methods=['POST'])
