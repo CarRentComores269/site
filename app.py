@@ -29,20 +29,29 @@ app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798'
 # Ensure instance folder exists for database
 os.makedirs('instance', exist_ok=True)
 
-# Environment configuration and database URL
-app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'False') == 'True'
+# Database Configuration
+database_config = {
+    'drivername': 'postgresql',
+    'username': 'carrent_user',
+    'password': 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs',
+    'host': 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com',
+    'port': 5432,
+    'database': 'carrent_ak7c'
+}
 
-# Robust database URL handling
-database_url = os.environ.get('DATABASE_URL', 'sqlite:///instance/carrent.db')
-if database_url.startswith('postgres://'):
-    database_url = database_url.replace('postgres://', 'postgresql://')
+# Construct SQLAlchemy database URL
+from sqlalchemy.engine.url import URL
+database_url = URL.create(**database_config)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+# Set database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = str(database_url)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = 'uploads/sales_vehicles'
-
-# Ensure upload directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+    'pool_size': 10,
+    'max_overflow': 20
+}
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
