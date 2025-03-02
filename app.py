@@ -34,29 +34,33 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Database Configuration
-database_config = {
-    'drivername': 'postgresql+psycopg2',
-    'username': os.environ.get('DB_USERNAME', 'carrent_user'),
-    'password': os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs'),
-    'host': os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com'),
-    'port': 5432,
-    'database': os.environ.get('DB_NAME', 'carrent_ak7c'),
-    'query': {
-        'sslmode': 'require'  # Force SSL connection
-    }
-}
+# Robust Database Connection
+def get_database_url():
+    # Priority order: Environment Variable, Hardcoded, Fallback
+    database_urls = [
+        os.environ.get('DATABASE_URL'),  # Render's default
+        os.environ.get('DB_CONNECTION_STRING'),  # Custom env var
+        f"postgresql://{os.environ.get('DB_USERNAME', 'carrent_user')}:"
+        f"{os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs')}@"
+        f"{os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com')}/"
+        f"{os.environ.get('DB_NAME', 'carrent_ak7c')}?sslmode=require",
+        'sqlite:///instance/carrent.db'  # Absolute last resort
+    ]
+    
+    for url in database_urls:
+        try:
+            # Validate URL
+            from sqlalchemy.engine.url import make_url
+            make_url(url)
+            logger.info(f"Attempting connection with URL: {url}")
+            return url
+        except Exception as e:
+            logger.warning(f"Invalid database URL: {url}. Error: {e}")
+    
+    raise ValueError("No valid database URL found")
 
-# Log connection details (be cautious with sensitive info)
-logger.info(f"Connecting to database: {database_config['host']}/{database_config['database']}")
-logger.info(f"Username: {database_config['username']}")
-
-# Construct SQLAlchemy database URL
-from sqlalchemy.engine.url import URL
-database_url = URL.create(**database_config)
-
-# Set database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = str(database_url)
+# Set database URL
+app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,

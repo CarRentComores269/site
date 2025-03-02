@@ -9,6 +9,8 @@ services:
         value: 265afb09533257ad9db63f7eadc3f798
       - key: FLASK_DEBUG
         value: "False"
+      - key: DB_CONNECTION_STRING
+        value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c?sslmode=require
       - key: DB_USERNAME
         value: carrent_user
       - key: DB_PASSWORD
