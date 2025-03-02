@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Transfer - CarRent Comores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/booking-form.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 76px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="/assets/logo.jpg" alt="CarRent Comores Logo" width="60" height="60" class="me-3 rounded img-thumbnail">
+                CarRent Comores
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index_en.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rentals_en.html">Rentals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sales_en.html">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="airport-transfer_en.html">Airport Transfer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about_en.html">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact_en.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate"></i> Language
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown" style="min-width: 80px;">
+                            <li><a class="dropdown-item" href="airport-transfer.html" onclick="changeLanguage('fr')">Français</a></li>
+                            <li><a class="dropdown-item" href="airport-transfer_en.html" onclick="changeLanguage('en')">English</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="airport-hero text-white">
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="display-4 fw-bold mb-4">Airport Transfer Service</h1>
+                    <p class="lead mb-4">Experience hassle-free transportation to and from the airport with our reliable transfer service. We ensure comfort, punctuality, and safety for all our clients.</p>
+                    <button class="btn btn-primary btn-lg book-transfer">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-section">
+        <div class="container">
+            <!-- Service Overview -->
+            <div class="row mb-5">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <img src="https://www.cocolodgemajunga-madagascar.com/wp-content/uploads/2022/06/Formalites-sanitaires-sur-le-voyage-Comores-Madagascar.jpg" 
+                         alt="Airport Transfer Service" 
+                         class="img-fluid rounded-3 shadow-lg">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="mb-4">Welcome to Our Airport Transfer Service</h2>
+                    <p class="lead mb-4">We are pleased to announce a new feature of our CarRent Comoros service: from now on, we offer you an airport transfer service! Whether you are arriving or departing, we offer you a practical and comfortable solution to get to or from the airport with complete peace of mind.</p>
+                </div>
+            </div>
+
+            <!-- Service Features -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plane-arrival fa-3x text-primary mb-3"></i>
+                            <h4>Arrival Service</h4>
+                            <p class="text-muted">Professional meet & greet service at the airport with name board</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plane-departure fa-3x text-primary mb-3"></i>
+                            <h4>Departure Service</h4>
+                            <p class="text-muted">Punctual pick-up and comfortable transfer to the airport</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                            <h4>24/7 Service</h4>
+                            <p class="text-muted">Available round-the-clock for all your transfer needs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-car fa-3x text-primary mb-3"></i>
+                            <h4>Modern Fleet</h4>
+                            <p class="text-muted">Comfortable and well-maintained vehicles for your journey</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Section -->
+            <section class="py-section bg-light">
+                <div class="container">
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-lg-8 text-center">
+                            <h2 class="display-5 fw-bold mb-4">Our Transfer Rates</h2>
+                            <p class="lead text-muted">Choose the service that best fits your travel needs</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 justify-content-center">
+                        <!-- Moroni to Airport -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-4">
+                                        <i class="fas fa-plane-departure text-primary fa-3x"></i>
+                                    </div>
+                                    <h3 class="h4 mb-3">Moroni to Airport</h3>
+                                    <div class="mb-4">
+                                        <span class="display-6 fw-bold">20€</span>
+                                        <span class="text-muted">/person</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check text-success me-2"></i>Standard service
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-building text-success me-2"></i>Door-to-door service
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-clock text-success me-2"></i>Book 2 hours before departure
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-info-circle text-primary me-2"></i>+10€ per parcel (Packaging)
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary book-transfer">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Airport to Moroni (Day) -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-4">
+                                        <i class="fas fa-sun text-primary fa-3x"></i>
+                                    </div>
+                                    <h3 class="h4 mb-3">Airport to Moroni (Day)</h3>
+                                    <div class="mb-4">
+                                        <span class="display-6 fw-bold">20€</span>
+                                        <span class="text-muted">/person</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check text-success me-2"></i>Standard service
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-handshake text-success me-2"></i>Meet and Greet
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-clock text-success me-2"></i>Book 24 hours before arrival
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-clock text-primary me-2"></i>8 AM - 6 PM
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary book-transfer">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Airport to Moroni (Night) -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-4">
+                                        <i class="fas fa-moon text-primary fa-3x"></i>
+                                    </div>
+                                    <h3 class="h4 mb-3">Airport to Moroni (Night)</h3>
+                                    <div class="mb-4">
+                                        <span class="display-6 fw-bold">50€</span>
+                                        <span class="text-muted">/person</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check text-success me-2"></i>Standard service
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-handshake text-success me-2"></i>Meet and Greet
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-clock text-success me-2"></i>Book 24 hours before arrival
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-clock text-primary me-2"></i>9 PM - 3 AM
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary book-transfer">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hors Moroni -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-4">
+                                        <i class="fas fa-map-marked-alt text-primary fa-3x"></i>
+                                    </div>
+                                    <h3 class="h4 mb-3">Outside Moroni</h3>
+                                    <div class="mb-4">
+                                        <span class="h4 fw-bold">Custom Rate</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check text-success me-2"></i>Flexible Service
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-route text-primary me-2"></i>Any destination
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-calculator text-primary me-2"></i>Price based on distance
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-info-circle text-success me-2"></i>Book in advance
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary book-transfer">Get Quote</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form Modal -->
+                    <div id="modalBackdrop" class="modal-backdrop" style="display: none;"></div>
+                    <div id="bookingModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close-modal" role="button" aria-label="Close booking form">&times;</span>
+                            <div class="form-container">
+                                <form id="airportTransferForm" action="https://api.web3forms.com/submit" method="POST">
+                                    <input type="hidden" name="access_key" value="6b135d77-31e6-4afe-adae-5748f23fe676">
+                                    <input type="hidden" name="service_type" id="selectedService" value="">
+
+                                    <div class="radio-group">
+                                        <label>
+                                            <input type="radio" name="transferType" value="departure" checked>
+                                            Départ
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="transferType" value="arrival">
+                                            Arrivée
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fullName">Nom complet:</label>
+                                        <input type="text" id="fullName" name="fullName" required minlength="2" maxlength="50" 
+                                               pattern="^[A-Za-z\s]+$" title="Letters and spaces only">
+                                        <div id="fullNameError" class="error-message">Veuillez entrer un nom valide</div>
+                                    </div>
+
+                                    <div class="form-group departure-only">
+                                        <label for="address">Adresse de Depart:</label>
+                                        <input type="text" id="address" name="address" required minlength="5" maxlength="100">
+                                        <div id="addressError" class="error-message">Veuillez entrer une adresse valide</div>
+                                    </div>
+
+                                    <div class="form-group arrival-only" style="display: none;">
+                                        <label for="destination">Destination:</label>
+                                        <input type="text" id="destination" name="destination" required minlength="3" maxlength="50">
+                                        <div id="destinationError" class="error-message">Veuillez entrer une destination valide</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phone">Numéro de téléphone (WhatsApp):</label>
+                                        <input type="tel" id="phone" name="phone" required pattern="[+0-9]{10,15}" 
+                                               title="10-15 digits, may start with +" placeholder="+1234567890">
+                                        <div id="phoneError" class="error-message">Veuillez entrer un numéro de téléphone valide</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="numPassengers">Nombre de passagers:</label>
+                                        <input type="number" id="numPassengers" name="numPassengers" min="1" max="10" required>
+                                        <div id="numPassengersError" class="error-message">1-10 passagers autorisés</div>
+                                    </div>
+
+                                    <div class="form-group departure-only">
+                                        <label for="departureDate">Date de Départ:</label>
+                                        <input type="date" id="departureDate" name="departureDate" required>
+                                        <div id="departureDateError" class="error-message">Veuillez sélectionner une date valide</div>
+                                    </div>
+
+                                    <div class="form-group departure-only">
+                                        <label for="departureTime">Heure de Depart:</label>
+                                        <input type="time" id="departureTime" name="departureTime" required>
+                                        <div id="departureTimeError" class="error-message">Veuillez sélectionner une heure valide</div>
+                                    </div>
+
+                                    <div class="form-group arrival-only" style="display: none;">
+                                        <label for="arrivalDate">Date d'Arrivée:</label>
+                                        <input type="date" id="arrivalDate" name="arrivalDate">
+                                        <div id="arrivalDateError" class="error-message">Veuillez sélectionner une date valide</div>
+                                    </div>
+
+                                    <div class="form-group arrival-only" style="display: none;">
+                                        <label for="arrivalTime">Heure d'Arrivée:</label>
+                                        <input type="time" id="arrivalTime" name="arrivalTime">
+                                        <div id="arrivalTimeError" class="error-message">Veuillez sélectionner une heure valide</div>
+                                    </div>
+
+                                    <div class="form-group arrival-only" style="display: none;">
+                                        <label for="airline">Compagnie Airline:</label>
+                                        <select id="airline" name="airline" required>
+                                            <option value="">Sélectionnez une compagnie</option>
+                                            <option value="ethiopia">Ethiopian Airlines</option>
+                                            <option value="kenya">Kenya Airways</option>
+                                            <option value="tanzania">Air Tanzania</option>
+                                            <option value="austral">Air Austral</option>
+                                            <option value="precision">Precision Air</option>
+                                            <option value="ewa">Ewa</option>
+                                        </select>
+                                        <div id="airlineError" class="error-message">Veuillez sélectionner une compagnie</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="serviceType">Type de Service:</label>
+                                        <select id="serviceType" name="serviceType" required>
+                                            <option value="">Sélectionnez un type de service</option>
+                                            <option value="standard">Standard</option>
+                                            <option value="vip">VIP</option>
+                                        </select>
+                                        <div id="serviceTypeError" class="error-message">Veuillez sélectionner un type de service</div>
+                                    </div>
+
+                                    <input type="submit" value="Book Transfer">
+                                </form>
+                                <div id="successMessage">Merci! Votre transfert a été booké avec succès.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="row mt-5">
+                        <div class="col-lg-8 mx-auto text-center">
+                            <div class="alert alert-info">
+                                <h4 class="alert-heading mb-3"><i class="fas fa-info-circle me-2"></i>Important Information</h4>
+                                <p class="mb-0">Prices may vary during holidays or special events. For group transfers or special requirements, please contact us for a customized quote.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-4">Why Choose Our Airport Transfer Service?</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="feature">
+                                <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+                                <h5>Safe & Reliable</h5>
+                                <p class="text-muted">Professional drivers and well-maintained vehicles</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature">
+                                <i class="fas fa-money-bill-wave fa-2x text-primary mb-3"></i>
+                                <h5>Fixed Prices</h5>
+                                <p class="text-muted">Transparent pricing with no hidden costs</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature">
+                                <i class="fas fa-headset fa-2x text-primary mb-3"></i>
+                                <h5>24/7 Support</h5>
+                                <p class="text-muted">Always here to assist you</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>CarRent Comores</h5>
+                    <p>Comfort, Freedom, Adventure. Rent your ideal car!</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Contact Us</h5>
+                    <p>Email: agence@carrentcomores.site<br>Phone: (+269) 342 45 43 / (+269) 476 45 99</p>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="social-media-icons mt-3">
+                        <a href="https://www.facebook.com/share/154wBC54VT/?mibextid=LQQJ4d" target="_blank" class="text-white me-3">
+                            <i class="fab fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="https://www.instagram.com/carrentcomore.site?igshid=aDZmaXgyYjhlNzYx&utm_source=qr" target="_blank" class="text-white me-3">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </a>
+                        <a href="https://wa.me/+2694924019" target="_blank" class="text-white me-3">
+                            <i class="fab fa-whatsapp fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 border-top pt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 CarRent Comores. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Modal handling
+        const modal = document.getElementById('bookingModal');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const closeBtn = document.querySelector('.close-modal');
+        const bookButtons = document.querySelectorAll('.book-transfer');
+
+        function openModal() {
+            modalBackdrop.style.display = 'block';
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal() {
+            modalBackdrop.style.display = 'none';
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.body.classList.remove('modal-open');
+        }
+
+        bookButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the service type from the card if it exists
+                const card = this.closest('.card');
+                if (card) {
+                    const serviceTitle = card.querySelector('.h4').textContent;
+                    document.getElementById('selectedService').value = serviceTitle;
+                } else {
+                    // If not in a card (welcome section button), set a default value
+                    document.getElementById('selectedService').value = "General Airport Transfer";
+                }
+                
+                openModal();
+            });
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modalBackdrop) {
+                closeModal();
+            }
+        });
+
+        // Form handling
+        function toggleFormFields() {
+            const transferType = document.querySelector('input[name="transferType"]:checked').value;
+            const departureFields = document.querySelectorAll('.departure-only');
+            const arrivalFields = document.querySelectorAll('.arrival-only');
+            
+            if (transferType === 'departure') {
+                departureFields.forEach(field => {
+                    field.style.display = 'flex';
+                    const input = field.querySelector('input');
+                    if (input) input.required = true;
+                });
+                arrivalFields.forEach(field => {
+                    field.style.display = 'none';
+                    const input = field.querySelector('input, select');
+                    if (input) input.required = false;
+                });
+            } else {
+                departureFields.forEach(field => {
+                    field.style.display = 'none';
+                    const input = field.querySelector('input');
+                    if (input) input.required = false;
+                });
+                arrivalFields.forEach(field => {
+                    field.style.display = 'flex';
+                    const input = field.querySelector('input, select');
+                    if (input) input.required = true;
+                });
+            }
+        }
+
+        // Add event listeners for radio buttons
+        document.querySelectorAll('input[name="transferType"]').forEach(radio => {
+            radio.addEventListener('change', toggleFormFields);
+        });
+
+        // Initialize form fields on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleFormFields();
+            
+            // Set min date to today for date inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('departureDate').setAttribute('min', today);
+            document.getElementById('arrivalDate').setAttribute('min', today);
+        });
+
+        document.getElementById('airportTransferForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let isValid = true;
+            
+            // Validate required inputs
+            this.querySelectorAll('input[required], select[required]').forEach(input => {
+                const errorElement = document.getElementById(input.id + 'Error');
+                if (errorElement) {
+                    if (!input.checkValidity()) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                }
+            });
+
+            if (!isValid) return;
+
+            // Prepare form data
+            const formData = new FormData(this);
+
+            // Send form data using Fetch API
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide form and show success message
+                    this.style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset form and close modal after 3 seconds
+                    setTimeout(() => {
+                        this.reset();
+                        this.style.display = 'flex';
+                        document.getElementById('successMessage').style.display = 'none';
+                        modal.style.display = 'none';
+                        modal.classList.remove('show');
+                        modalBackdrop.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 3000);
+                } else {
+                    alert('Submission failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

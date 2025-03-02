@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location de voitures - CarRent Comores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .car-card {
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .car-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        #noResultsMessage {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8d7da;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="/assets/logo.jpg" alt="CarRent Comores Logo" width="60" height="60" class="me-3 rounded img-thumbnail">
+                CarRent Comores
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="rentals.html">Location</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sales.html">Vente</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="airport-transfer.html">Transfert Aéroport</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">À Propos de Nous</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contactez-Nous</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate"></i> Langue
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown" style="min-width: 80px;">
+                            <li><a class="dropdown-item" href="rentals_en.html" onclick="changeLanguage('en')">English</a></li>
+                            <li><a class="dropdown-item" href="rentals.html" onclick="changeLanguage('fr')">Français</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Rentals Search Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row filter-section">
+                <h2 class="text-center mb-4">Trouvez votre voiture de location</h2>
+                <div class="col-md-3">
+                    <label class="form-label">Catégorie</label>
+                    <select id="categoryFilter" class="form-select">
+                        <option value="">Toutes les Catégories</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="Pickup">Pick up</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Moto">Moto</option>
+                        <option value="Taxi">Taxi</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tarif</label>
+                    <select id="priceFilter" class="form-select">
+                        <option value="">Tout le Tarif</option>
+                        <option value="10000-20000">KMF 10,000 - KMF 20000/jours</option>
+                        <option value="20001-30000">KMF 20000 - KMF 30000/jours</option>
+                        <option value="30001-40000">KMF 30000 - KMF 40000/jours</option>
+                        <option value="40000+">KMF 40000+/jours</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Transmission</label>
+                    <select id="transmissionFilter" class="form-select">
+                        <option value="">Toutes les Transmissions</option>
+                        <option value="Automatic">Automatique</option>
+                        <option value="Manual">Manuelle</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Capacité</label>
+                    <select id="passengersFilter" class="form-select">
+                        <option value="">Toute la Capacité</option>
+                        <option value="2">2 Passagers</option>
+                        <option value="4">4 Passagers</option>
+                        <option value="5">5 Passagers</option>
+                        <option value="7+">7+ Passagers</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3 text-center">
+                    <button id="applyFilters" class="btn btn-primary">Filtrer</button>
+                    <button id="resetFilters" class="btn btn-secondary ms-2">Réinitialiser</button>
+                </div>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResultsMessage" class="alert alert-warning" role="alert">
+                Aucune voiture ne correspond à vos critères de filtre actuels. Essayez d'ajuster votre recherche.
+            </div>
+
+            <!-- Car Listings -->
+            <div id="carListings" class="row g-4 mt-3">
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal HTML -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reserver votre voiture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="bookingCarImage" src="" class="img-fluid rounded mb-3" alt="Car Image">
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="bookingCarName"></h4>
+                            <p id="bookingCarDetails" class="text-muted"></p>
+                            <form id="bookingForm">
+                                <div class="mb-3">
+                                    <label for="bookingName" class="form-label">Nom Complet</label>
+                                    <input type="text" class="form-control" id="bookingName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bookingEmail" class="form-label">Adresse Email</label>
+                                    <input type="email" class="form-control" id="bookingEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bookingPhone" class="form-label">Numéro de Telephone</label>
+                                    <input type="tel" class="form-control" id="bookingPhone" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="bookingStartDate" class="form-label">Date de debut</label>
+                                        <input type="date" class="form-control" id="bookingStartDate" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="bookingEndDate" class="form-label">Date de fin</label>
+                                        <input type="date" class="form-control" id="bookingEndDate" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="additionalServices" class="form-label">Services Additionnels</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="insuranceCheck" value="15000">
+                                        <label class="form-check-label" for="insuranceCheck">
+                                            Assurance complète (+KMF 12500/jour)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="gpsCheck" value="2000">
+                                        <label class="form-check-label" for="gpsCheck">
+                                            Guide Touristique (+KMF 2000/jour)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extraDriverCheck" value="7500">
+                                        <label class="form-check-label" for="extraDriverCheck">
+                                            Avec chauffeur (+KMF 7500/day)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Résumé de la réservation</h6>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Tarif de base:</span>
+                                            <span id="baseRateDisplay">KMF 0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Jours de location:</span>
+                                            <span id="rentalDaysDisplay">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Services supplémentaires:</span>
+                                            <span id="additionalServicesDisplay">KMF 0</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between fw-bold">
+                                            <span>Total:</span>
+                                            <span id="totalCostDisplay">KMF 0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Confirmer la réservation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>CarRent Comores</h5>
+                    <p>Confort, Liberté, Aventure. Louez votre voiture idéal!</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Contactez-Nous</h5>
+                    <p>Email: agence@carrentcomores.site<br>Phone: (+269) 342 45 43 / (+269) 476 45 99</p>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="social-media-icons mt-3">
+                        <a href="https://www.facebook.com/share/154wBC54VT/?mibextid=LQQJ4d" target="_blank" class="text-white me-3">
+                            <i class="fab fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="https://www.instagram.com/carrentcomore.site?igshid=aDZmaXgyYjhlNzYx&utm_source=qr" target="_blank" class="text-white me-3">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </a>
+                        <a href="https://wa.me/+2694924019" target="_blank" class="text-white me-3">
+                            <i class="fab fa-whatsapp fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 border-top pt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 CarRent Comores. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Consistent storage key
+            const VEHICLES_STORAGE_KEY = 'carrentComoresVehicles';
+
+            // Function to fetch vehicles from backend
+            async function fetchVehicles() {
+                try {
+                    const response = await fetch('/get_vehicles');
+                    const vehicles = await response.json();
+                    
+                    // Debug logging
+                    console.log('Backend Vehicles:', vehicles);
+
+                    // Update local storage for compatibility
+                    localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(vehicles));
+
+                    return vehicles;
+                } catch (error) {
+                    console.error('Error fetching vehicles:', error);
+                    return JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) || '[]');
+                }
+            }
+
+            // Function to render vehicles
+            function renderVehicles(vehicles) {
+                // Clear previous listings
+                const carListings = document.getElementById('carListings');
+                carListings.innerHTML = '';
+
+                // If no vehicles found
+                if (vehicles.length === 0) {
+                    document.getElementById('noResultsMessage').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('noResultsMessage').style.display = 'none';
+
+                // Sort vehicles by status priority
+                vehicles.sort((a, b) => {
+                    const statusPriority = {
+                        'Available': 1,
+                        'Booked': 2,
+                        'Under Maintenance': 3
+                    };
+                    return statusPriority[a.status] - statusPriority[b.status];
+                });
+
+                vehicles.forEach(car => {
+                    const carCard = document.createElement('div');
+                    carCard.className = 'col-md-4 mb-4';
+                    carCard.innerHTML = `
+                        <div class="card h-100 shadow-sm border-0 rounded-lg overflow-hidden car-card">
+                            <div class="position-relative">
+                                <img src="${car.image}" class="card-img-top car-image" alt="${car.name}">
+                                <div class="car-category-badge position-absolute top-0 end-0 m-2 badge bg-primary">
+                                    ${car.category}
+                                </div>
+                                <div class="car-plate-badge position-absolute top-0 start-0 m-2 badge bg-secondary">
+                                    ${car.plate}
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">${car.name}</h5>
+                                    <span class="h5 text-primary mb-0">KMF ${car.price}/jour</span>
+                                </div>
+                                <p class="card-text text-muted small flex-grow-1">${car.description}</p>
+                                <div class="car-details-extended mb-3">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-car me-2"></i>Transmission</small>
+                                            <strong>${car.transmission}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-users me-2"></i>Passagers</small>
+                                            <strong>${car.passengers}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-tag me-2"></i>Numéro de plaque</small>
+                                            <strong>${car.plate}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-list me-2"></i>Categorie</small>
+                                            <strong>${car.category}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-gas-pump me-2"></i>Type de gaz</small>
+                                            <strong>${car.gasType}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block"><i class="fas fa-info-circle me-2"></i>Statut</small>
+                                            <strong class="${
+                                                car.status === 'Available' ? 'text-success' : 
+                                                car.status === 'Booked' ? 'text-warning' : 'text-danger'
+                                            }">${car.status}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button 
+                                    class="btn btn-primary mt-3 book-now-btn" 
+                                    ${car.status !== 'Available' ? 'disabled' : ''}
+                                    data-plate="${car.plate}"
+                                    data-name="${car.name}" 
+                                    data-category="${car.category}"
+                                    data-price="${car.price}"
+                                    data-transmission="${car.transmission}"
+                                    data-passengers="${car.passengers}"
+                                    data-gas-type="${car.gasType}"
+                                    data-image="${car.image}"
+                                    data-status="${car.status}"
+                                >
+                                    ${car.status === 'Available' ? 'Réservez maintenant' : 'Non disponible'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    carListings.appendChild(carCard);
+                });
+            }
+
+            // Function to apply filters
+            function applyFilters(vehicles) {
+                const categoryFilter = document.getElementById('categoryFilter').value;
+                const priceFilter = document.getElementById('priceFilter').value;
+                const transmissionFilter = document.getElementById('transmissionFilter').value;
+                const passengersFilter = document.getElementById('passengersFilter').value;
+
+                // Get URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlCategory = urlParams.get('category');
+
+                return vehicles.filter(car => {
+                    const matchCategory = 
+                        (!categoryFilter && !urlCategory) || 
+                        car.category === (categoryFilter || urlCategory);
+                    
+                    const matchPrice = !priceFilter || checkPriceRange(car.price, priceFilter);
+                    const matchTransmission = !transmissionFilter || car.transmission === transmissionFilter;
+                    const matchPassengers = !passengersFilter || checkPassengersRange(car.passengers, passengersFilter);
+
+                    return matchCategory && matchPrice && matchTransmission && matchPassengers;
+                });
+            }
+
+            // Helper functions for filtering
+            function checkPriceRange(price, range) {
+                switch(range) {
+                    case '10000-20000': return price >= 10000 && price <= 20000;
+                    case '20001-30000': return price > 20000 && price <= 30000;
+                    case '30001-40000': return price > 30000 && price <= 40000;
+                    case '40000+': return price > 40000;
+                    default: return true;
+                }
+            }
+
+            function checkPassengersRange(passengers, range) {
+                switch(range) {
+                    case '2': return passengers === 2;
+                    case '4': return passengers === 4;
+                    case '5': return passengers === 5;
+                    case '7+': return passengers >= 7;
+                    default: return true;
+                }
+            }
+
+            // Initial load and filter setup
+            async function initializeVehicles() {
+                const vehicles = await fetchVehicles();
+                renderVehicles(vehicles);
+
+                // Filter button event listeners
+                document.getElementById('applyFilters').addEventListener('click', () => {
+                    const filteredVehicles = applyFilters(vehicles);
+                    renderVehicles(filteredVehicles);
+                });
+
+                document.getElementById('resetFilters').addEventListener('click', () => {
+                    document.getElementById('categoryFilter').value = '';
+                    document.getElementById('priceFilter').value = '';
+                    document.getElementById('transmissionFilter').value = '';
+                    document.getElementById('passengersFilter').value = '';
+                    renderVehicles(vehicles);
+                });
+
+                // Get URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlCategory = urlParams.get('category');
+
+                if (urlCategory) {
+                    document.getElementById('categoryFilter').value = urlCategory;
+                    const filteredVehicles = applyFilters(vehicles);
+                    renderVehicles(filteredVehicles);
+                }
+            }
+
+            // Booking modal functionality
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            const bookingCarImage = document.getElementById('bookingCarImage');
+            const bookingCarName = document.getElementById('bookingCarName');
+            const bookingCarDetails = document.getElementById('bookingCarDetails');
+            const bookingForm = document.getElementById('bookingForm');
+            const startDateInput = document.getElementById('bookingStartDate');
+            const endDateInput = document.getElementById('bookingEndDate');
+            const rentalDaysDisplay = document.getElementById('rentalDaysDisplay');
+            const baseRateDisplay = document.getElementById('baseRateDisplay');
+            const additionalServicesDisplay = document.getElementById('additionalServicesDisplay');
+            const totalCostDisplay = document.getElementById('totalCostDisplay');
+            const additionalServiceChecks = [
+                document.getElementById('insuranceCheck'),
+                document.getElementById('gpsCheck'),
+                document.getElementById('extraDriverCheck')
+            ];
+
+            let dailyRate = 0;
+            let rentalDays = 0;
+
+            // Function to reset booking summary
+            function resetBookingSummary() {
+                startDateInput.value = '';
+                endDateInput.value = '';
+                additionalServiceChecks.forEach(check => check.checked = false);
+                rentalDaysDisplay.textContent = '0';
+                baseRateDisplay.textContent = 'KMF 0';
+                additionalServicesDisplay.textContent = 'KMF 0';
+                totalCostDisplay.textContent = 'KMF 0';
+                bookingCarImage.src = '';
+                bookingCarName.textContent = '';
+                bookingCarDetails.textContent = '';
+                dailyRate = 0;
+            }
+
+            // Event delegation for book now buttons
+            document.getElementById('carListings').addEventListener('click', function(event) {
+                const bookBtn = event.target.closest('.book-now-btn');
+                if (bookBtn) {
+                    // Reset previous booking summary
+                    resetBookingSummary();
+
+                    // Populate modal with car details
+                    bookingCarImage.src = bookBtn.getAttribute('data-image');
+                    bookingCarName.textContent = bookBtn.getAttribute('data-name');
+                    
+                    // Set daily rate
+                    dailyRate = parseFloat(bookBtn.getAttribute('data-price'));
+                    
+                    // Create detailed car info
+                    const carDetailText = `
+                        Plate: ${bookBtn.getAttribute('data-plate')} |
+                        Catégorie: ${bookBtn.getAttribute('data-category')} | 
+                        Price: KMF ${dailyRate}/day | 
+                        Transmission: ${bookBtn.getAttribute('data-transmission')} | 
+                        Passengers: ${bookBtn.getAttribute('data-passengers')} |
+                        Gas Type: ${bookBtn.getAttribute('data-gas-type')}
+                    `;
+                    bookingCarDetails.textContent = carDetailText;
+
+                    // Show the modal
+                    bookingModal.show();
+                }
+            });
+
+            // Reset booking summary when modal is closed
+            document.getElementById('bookingModal').addEventListener('hidden.bs.modal', resetBookingSummary);
+
+            // Date and service calculations
+            function calculatePrice() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                
+                if (startDate && endDate && startDate < endDate) {
+                    // Calculate days, adding 1 to include both start and end dates
+                    rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    // Base rate calculation
+                    const baseRate = dailyRate * rentalDays;
+                    
+                    // Additional services calculation
+                    let additionalServicesCost = 0;
+                    additionalServiceChecks.forEach(check => {
+                        if (check.checked) {
+                            additionalServicesCost += parseFloat(check.value) * rentalDays;
+                        }
+                    });
+
+                    // Update displays
+                    baseRateDisplay.textContent = `KMF ${baseRate.toFixed(2)}`;
+                    rentalDaysDisplay.textContent = rentalDays;
+                    additionalServicesDisplay.textContent = `KMF ${additionalServicesCost.toFixed(2)}`;
+                    totalCostDisplay.textContent = `KMF ${(baseRate + additionalServicesCost).toFixed(2)}`;
+                } else {
+                    // Reset if dates are invalid
+                    rentalDaysDisplay.textContent = '0';
+                    baseRateDisplay.textContent = 'KMF 0';
+                    additionalServicesDisplay.textContent = 'KMF 0';
+                    totalCostDisplay.textContent = 'KMF 0';
+                }
+            }
+
+            // Add event listeners for date and service calculations
+            startDateInput.addEventListener('change', calculatePrice);
+            endDateInput.addEventListener('change', calculatePrice);
+            additionalServiceChecks.forEach(check => {
+                check.addEventListener('change', calculatePrice);
+            });
+
+            // Booking form submission
+            bookingForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const bookingData = {
+                    customer_name: document.getElementById('bookingName').value,
+                    customer_email: document.getElementById('bookingEmail').value,
+                    customer_phone: document.getElementById('bookingPhone').value,
+                    vehicle_plate: bookingCarDetails.textContent.split('Plate:')[1] ? bookingCarDetails.textContent.split('Plate:')[1].trim().split('|')[0].trim() : 'Unknown',
+                    vehicle_name: bookingCarName.textContent,
+                    vehicle_category: bookingCarDetails.textContent.split('Category:')[1] ? bookingCarDetails.textContent.split('Category:')[1].trim().split('|')[0].trim() : 'Unknown',
+                    start_date: startDateInput.value,
+                    end_date: endDateInput.value,
+                    rental_days: rentalDays,
+                    base_rate: parseFloat(baseRateDisplay.textContent.replace('KMF ', '')),
+                    additional_services: parseFloat(additionalServicesDisplay.textContent.replace('KMF ', '')),
+                    total_cost: parseFloat(totalCostDisplay.textContent.replace('KMF ', '')),
+                    status: 'Pending',
+                    additional_services_details: {
+                        insurance: document.getElementById('insuranceCheck').checked,
+                        gps: document.getElementById('gpsCheck').checked,
+                        extra_driver: document.getElementById('extraDriverCheck').checked
+                    }
+                };
+
+                try {
+                    const response = await fetch('/submit_booking', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Booking submission failed');
+                    }
+
+                    const result = await response.json();
+
+                    // Simulate booking confirmation
+                    alert(`Réservation réussie !\n
+Numéro de réservation: ${result.booking_id}
+Véhicule: ${bookingData.vehicle_name}
+Total: KMF ${bookingData.total_cost}
+Statut: En attente
+
+Notre équipe vérifiera votre réservation et vous contacterons rapidement.`);
+
+                    // Reset form and close modal
+                    bookingForm.reset();
+                    bookingModal.hide();
+
+                } catch (error) {
+                    console.error('Booking Error:', error);
+                    alert('Failed to submit booking. Please try again or contact support.');
+                }
+            });
+
+            initializeVehicles();
+        });
+    </script>
+</body>
+</html>

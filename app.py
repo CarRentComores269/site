@@ -691,23 +691,95 @@ def sales_management():
         return redirect(url_for('admin_login'))
     return send_file('sales_management.html')
 
-# Add route to serve static files
-@app.route('/<path:filename>')
-def serve_static(filename):
-    """
-    Serve static files from the static directory
-    Handles CSS, JS, images, and other static assets
-    """
-    try:
-        return send_from_directory('static', filename)
-    except FileNotFoundError:
-        app.logger.error(f"Static file not found: {filename}")
-        return '', 404
-
-# Add route for index page
+# Comprehensive HTML Page and Static File Routing
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/<page>.html')
+def serve_html_page(page):
+    """
+    Dynamically serve HTML pages with error handling
+    Supports multilingual and different page variations
+    """
+    try:
+        # List of valid pages to prevent directory traversal
+        valid_pages = [
+            'index', 'index_en', 
+            'rentals', 'rentals_en', 
+            'sales', 
+            'about', 
+            'contact', 
+            'dashboard'
+        ]
+        
+        # Check if requested page is valid
+        if page not in valid_pages:
+            app.logger.warning(f"Attempted to access invalid page: {page}")
+            return render_template('index.html'), 404
+        
+        # Try to render the specific page, fallback to index if not found
+        try:
+            return render_template(f'{page}.html')
+        except TemplateNotFound:
+            app.logger.error(f"Template not found: {page}.html")
+            return render_template('index.html'), 404
+    
+    except Exception as e:
+        app.logger.error(f"Error serving page {page}: {e}")
+        return render_template('index.html'), 500
+
+# Enhanced Static File Serving with Multilingual Support
+@app.route('/<path:filename>')
+def serve_static_or_page(filename):
+    """
+    Comprehensive static file and page serving
+    Handles CSS, JS, images, HTML pages with error logging
+    """
+    try:
+        # Check if it's a static file in static directories
+        static_dirs = ['css', 'js', 'assets']
+        for directory in static_dirs:
+            file_path = os.path.join('static', directory, filename)
+            if os.path.exists(file_path):
+                return send_from_directory(f'static/{directory}', filename)
+        
+        # Check if it's an HTML page
+        if filename.endswith('.html'):
+            page_name = filename.replace('.html', '')
+            return serve_html_page(page_name)
+        
+        # If no match found, log and return 404
+        app.logger.warning(f"File not found: {filename}")
+        return '', 404
+    
+    except Exception as e:
+        app.logger.error(f"Error serving {filename}: {e}")
+        return '', 500
+
+# Ensure all HTML files are in the root directory for Render deployment
+def copy_html_files():
+    """
+    Ensure all HTML files are accessible for deployment
+    """
+    import shutil
+    
+    html_files = [
+        'index.html', 'index_en.html',
+        'rentals.html', 'rentals_en.html',
+        'sales.html', 'about.html', 
+        'contact.html', 'dashboard.html'
+    ]
+    
+    for file in html_files:
+        source = os.path.join(os.getcwd(), file)
+        if not os.path.exists(source):
+            app.logger.warning(f"HTML file not found: {file}")
+
+# Initialize file management during app startup
+with app.app_context():
+    copy_html_files()
+    app.logger.info("HTML file management initialized")
 
 # Route to add a new sales vehicle
 @app.route('/add_sales_vehicle', methods=['POST'])
