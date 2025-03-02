@@ -12,6 +12,7 @@ import time
 from datetime import datetime
 from sqlalchemy import text
 import shutil
+from flask_migrate import Migrate
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
@@ -23,10 +24,17 @@ logging.basicConfig(level=logging.DEBUG,
 
 # Create Flask app with explicit template and static folders
 app = Flask(__name__, template_folder='.', static_folder='.')
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798')
 
-# Configure SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carrent.db'
+# Ensure instance folder exists for database
+os.makedirs('instance', exist_ok=True)
+
+# Configure database for PostgreSQL and SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', 
+    'postgresql:///carrent.db'
+)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads/sales_vehicles'
 
@@ -35,6 +43,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
+
+# Initialize Flask-Migrate
+migrate = Migrate(app, db)
 
 # Vehicle Model matching localStorage structure
 class Vehicle(db.Model):
@@ -125,7 +136,7 @@ class Booking(db.Model):
 import shutil
 from datetime import datetime
 
-def backup_database(db_path='carrent.db'):
+def backup_database(db_path='instance/carrent.db'):
     """
     Create a backup of the SQLite database
     

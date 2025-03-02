@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: carrent-comores
+    env: python3.10
+    buildCommand: pip install -r requirements.txt
+    startCommand: flask db upgrade && gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        value: 265afb09533257ad9db63f7eadc3f798
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: carrent-db
+          property: connectionString
+
+databases:
+  - name: carrent-db
+    databaseName: carrent_ak7c
+    user: carrent_user
+    plan: free
