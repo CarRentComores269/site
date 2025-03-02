@@ -81,6 +81,67 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
+# Robust Upload Folder Configuration
+import os
+import sys
+
+# Determine the base upload directory with multiple fallback strategies
+def get_upload_folder():
+    """
+    Dynamically determine the upload folder path with multiple fallback strategies
+    Ensures compatibility across different deployment environments
+    """
+    potential_paths = [
+        os.environ.get('UPLOAD_FOLDER'),  # Environment variable
+        os.path.join(os.getcwd(), 'uploads'),  # Current working directory
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads'),  # Script directory
+        '/tmp/carrent_uploads',  # Fallback temporary directory
+        os.path.expanduser('~/carrent_uploads')  # User home directory fallback
+    ]
+    
+    for path in potential_paths:
+        try:
+            # Attempt to create the directory if it doesn't exist
+            os.makedirs(path, exist_ok=True)
+            
+            # Verify write permissions
+            test_file = os.path.join(path, '.write_test')
+            with open(test_file, 'w') as f:
+                f.write('test')
+            os.remove(test_file)
+            
+            app.logger.info(f"Upload folder configured: {path}")
+            return path
+        except Exception as e:
+            app.logger.warning(f"Could not use path {path}: {e}")
+    
+    # Absolute last resort
+    raise RuntimeError("Unable to create a suitable upload folder")
+
+# Configure upload folder during app initialization
+try:
+    UPLOAD_FOLDER = get_upload_folder()
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    
+    # Ensure subdirectories exist
+    upload_subdirs = [
+        'sales_vehicles',
+        'rental_vehicles',
+        'temp'
+    ]
+    
+    for subdir in upload_subdirs:
+        subdir_path = os.path.join(UPLOAD_FOLDER, subdir)
+        os.makedirs(subdir_path, exist_ok=True)
+        app.logger.info(f"Created upload subdirectory: {subdir_path}")
+
+except Exception as e:
+    app.logger.critical(f"FATAL: Upload folder configuration failed: {e}")
+    # Provide a fallback or raise a critical error
+    UPLOAD_FOLDER = '/tmp/carrent_uploads'
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # Fallback database initialization
 def init_db():
     try:
@@ -910,7 +971,15 @@ with app.app_context():
 # Route to add a new sales vehicle
 @app.route('/add_sales_vehicle', methods=['POST'])
 def add_sales_vehicle():
+    """
+    Enhanced route for adding sales vehicles with robust file handling
+    """
     try:
+        # Verify upload folder is configured
+        if 'UPLOAD_FOLDER' not in app.config:
+            app.logger.error("Upload folder not configured")
+            return jsonify({"error": "Upload configuration error"}), 500
+        
         # Extract form data
         make = request.form.get('make')
         model = request.form.get('model')

@@ -11,6 +11,8 @@ services:
         value: 2
       - key: GUNICORN_TIMEOUT
         value: 120
+      - key: UPLOAD_FOLDER
+        value: /opt/render/project/uploads
       # Database Connection Configurations
       - key: DATABASE_URL
         value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c
