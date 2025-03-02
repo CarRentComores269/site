@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+venv/
+*.egg-info/
+
+# Database
+instance/*.db
+*.sqlite3
+
+# Uploads
+uploads/sales_vehicles/*
+!uploads/sales_vehicles/.gitkeep
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

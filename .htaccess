@@ -1,0 +1,21 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
+
+# Prevent directory listing
+Options -Indexes
+
+# Secure config files
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Compress text files
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Set default character set
+AddDefaultCharset UTF-8

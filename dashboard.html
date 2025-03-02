@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Management Dashboard - CarRent Comores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .vehicle-card {
+            transition: all 0.3s ease;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .edit-btn, .delete-btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+                <img src="assets/logo.jpg" alt="CarRent Comores Logo" width="60" height="60" class="me-3 rounded img-thumbnail">
+                CarRent Comores - Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookings.html">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sales_management.html">Sales Management</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Vehicle Management Dashboard</h2>
+                <div id="vehicleStats" class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Vehicles</h5>
+                                <p id="totalVehiclesCount" class="card-text display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Available Vehicles</h5>
+                                <p id="availableVehiclesCount" class="card-text display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-warning mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Vehicle Categories</h5>
+                                <p id="vehicleCategoriesCount" class="card-text display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Vehicles List</h4>
+                        <div class="btn-group">
+                            <button id="addNewVehicleBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+                                <i class="fas fa-plus me-2"></i>Add New Vehicle
+                            </button>
+                            <button id="clearVehiclesBtn" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Clear All Vehicles
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="vehicleListings" class="row g-4">
+                            <!-- Vehicles will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Vehicle Modal -->
+    <div class="modal fade" id="editVehicleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Vehicle Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editVehicleForm">
+                        <input type="hidden" id="editPlateNumber">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle Name</label>
+                                <input type="text" class="form-control" id="editVehicleName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" id="editCategory" required>
+                                    <option value="SUV">SUV</option>
+                                    <option value="Sedan">Sedan</option>
+                                    <option value="Pickup">Pick up</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Moto">Moto</option>
+                                    <option value="Taxi">Taxi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price per Day (KMF)</label>
+                                <input type="number" class="form-control" id="editPrice" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Transmission</label>
+                                <select class="form-select" id="editTransmission" required>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Passengers</label>
+                                <input type="number" class="form-control" id="editPassengers" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Gas Type</label>
+                                <select class="form-select" id="editGasType" required>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="Electric">Electric</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="editDescription" rows="3" required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Image URL</label>
+                                <input type="url" class="form-control" id="editImageUrl" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="editStatus" required>
+                                    <option value="Available">Available</option>
+                                    <option value="Booked">Booked</option>
+                                    <option value="Under Maintenance">Under Maintenance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div class="modal fade" id="addVehicleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Vehicle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addVehicleForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle Plate Number</label>
+                                <input type="text" class="form-control" id="addVehiclePlate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle Name</label>
+                                <input type="text" class="form-control" id="addVehicleName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" id="addCategory" required>
+                                    <option value="SUV">SUV</option>
+                                    <option value="Sedan">Sedan</option>
+                                    <option value="Pickup">Pick up</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Moto">Moto</option>
+                                    <option value="Taxi">Taxi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price per Day (KMF)</label>
+                                <input type="number" class="form-control" id="addPrice" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Transmission</label>
+                                <select class="form-select" id="addTransmission" required>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Passengers</label>
+                                <input type="number" class="form-control" id="addPassengers" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Gas Type</label>
+                                <select class="form-select" id="addGasType" required>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="Electric">Electric</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="addDescription" rows="3" required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Image URL</label>
+                                <input type="url" class="form-control" id="addImageUrl" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="addStatus" required>
+                                    <option value="Available">Available</option>
+                                    <option value="Booked">Booked</option>
+                                    <option value="Under Maintenance">Under Maintenance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Vehicle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Consistent storage key
+        const VEHICLES_STORAGE_KEY = 'carrentComoresVehicles';
+
+        // Function to fetch vehicles from backend
+        async function fetchVehicles() {
+            try {
+                const response = await fetch('/get_vehicles');
+                const vehicles = await response.json();
+                
+                // Update local storage for compatibility
+                localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(vehicles));
+
+                return vehicles;
+            } catch (error) {
+                console.error('Error fetching vehicles:', error);
+                return JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) || '[]');
+            }
+        }
+
+        // Function to add a vehicle via backend
+        async function addVehicle(vehicleData) {
+            try {
+                const response = await fetch('/add_vehicle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(vehicleData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to add vehicle');
+                }
+
+                const addedVehicle = await response.json();
+                console.log('Vehicle added successfully:', addedVehicle);
+
+                // Update local storage
+                const vehicles = JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) || '[]');
+                vehicles.push(vehicleData);
+                localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(vehicles));
+
+                return addedVehicle;
+            } catch (error) {
+                console.error('Error adding vehicle:', error);
+                alert(error.message);
+                return null;
+            }
+        }
+
+        // Function to update a vehicle via backend
+        async function updateVehicle(vehicleData) {
+            try {
+                const response = await fetch('/update_vehicle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(vehicleData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to update vehicle');
+                }
+
+                const updatedVehicle = await response.json();
+                console.log('Vehicle updated successfully:', updatedVehicle);
+
+                // Update local storage
+                const vehicles = JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) || '[]');
+                const index = vehicles.findIndex(v => v.plate === vehicleData.plate);
+                if (index !== -1) {
+                    vehicles[index] = vehicleData;
+                    localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(vehicles));
+                }
+
+                return updatedVehicle;
+            } catch (error) {
+                console.error('Error updating vehicle:', error);
+                alert(error.message);
+                return null;
+            }
+        }
+
+        // Function to delete a vehicle via backend
+        async function deleteVehicle(plateNumber) {
+            try {
+                const response = await fetch('/delete_vehicle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ plate: plateNumber })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete vehicle');
+                }
+
+                console.log('Vehicle deleted successfully:', plateNumber);
+
+                // Update local storage
+                const vehicles = JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) || '[]');
+                const updatedVehicles = vehicles.filter(v => v.plate !== plateNumber);
+                localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(updatedVehicles));
+
+                return true;
+            } catch (error) {
+                console.error('Error deleting vehicle:', error);
+                alert(error.message);
+                return false;
+            }
+        }
+
+        // Function to clear all vehicles via backend
+        async function clearVehicles() {
+            try {
+                const response = await fetch('/clear_vehicles', {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to clear vehicles');
+                }
+
+                console.log('All vehicles cleared successfully');
+                localStorage.removeItem(VEHICLES_STORAGE_KEY);
+                return true;
+            } catch (error) {
+                console.error('Error clearing vehicles:', error);
+                alert(error.message);
+                return false;
+            }
+        }
+
+        // Existing dashboard initialization code...
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is logged in
+            if (!localStorage.getItem('isLoggedIn')) {
+                window.location.href = 'admin-login.html';
+            }
+
+            const vehicleListings = document.getElementById('vehicleListings');
+            const editVehicleModal = new bootstrap.Modal(document.getElementById('editVehicleModal'));
+            const addVehicleModal = new bootstrap.Modal(document.getElementById('addVehicleModal'));
+            const editVehicleForm = document.getElementById('editVehicleForm');
+            const addVehicleForm = document.getElementById('addVehicleForm');
+
+            // Stats elements
+            const totalVehiclesCount = document.getElementById('totalVehiclesCount');
+            const availableVehiclesCount = document.getElementById('availableVehiclesCount');
+            const vehicleCategoriesCount = document.getElementById('vehicleCategoriesCount');
+
+            // Fetch vehicles from backend
+            const vehicles = await fetchVehicles();
+
+            // Update stats
+            totalVehiclesCount.textContent = vehicles.length;
+            const categories = new Set(vehicles.map(v => v.category));
+            vehicleCategoriesCount.textContent = categories.size;
+            availableVehiclesCount.textContent = vehicles.filter(v => v.status === 'Available').length;
+
+            // Render vehicles
+            vehicleListings.innerHTML = '';
+            vehicles.forEach(vehicle => {
+                const vehicleCard = document.createElement('div');
+                vehicleCard.className = 'col-md-4';
+                vehicleCard.innerHTML = `
+                    <div class="card vehicle-card h-100" data-plate="${vehicle.plate}">
+                        <div class="position-relative">
+                            <img src="${vehicle.image}" class="card-img-top" alt="${vehicle.name}" style="height: 200px; object-fit: cover;">
+                            <span class="badge position-absolute top-0 end-0 m-2 
+                                ${vehicle.status === 'Available' ? 'bg-success' : 
+                                  vehicle.status === 'Booked' ? 'bg-warning' : 'bg-danger'}">
+                                ${vehicle.status}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${vehicle.name}</h5>
+                            <p class="card-text text-muted">${vehicle.description}</p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Category</small>
+                                    <strong>${vehicle.category}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Price</small>
+                                    <strong>KMF ${vehicle.price}/day</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <button class="btn btn-sm btn-outline-primary edit-btn">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-btn">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                vehicleListings.appendChild(vehicleCard);
+            });
+
+            // Event delegation for Edit and Delete buttons
+            vehicleListings.addEventListener('click', async function(event) {
+                const editBtn = event.target.closest('.edit-btn');
+                const deleteBtn = event.target.closest('.delete-btn');
+                
+                if (editBtn) {
+                    const vehicleCard = editBtn.closest('.vehicle-card');
+                    const plateNumber = vehicleCard.getAttribute('data-plate');
+                    
+                    // Find the vehicle details
+                    const vehicles = await fetchVehicles();
+                    const vehicle = vehicles.find(v => v.plate === plateNumber);
+                    
+                    if (vehicle) {
+                        // Populate edit modal
+                        document.getElementById('editPlateNumber').value = vehicle.plate;
+                        document.getElementById('editVehicleName').value = vehicle.name;
+                        document.getElementById('editCategory').value = vehicle.category;
+                        document.getElementById('editPrice').value = vehicle.price;
+                        document.getElementById('editTransmission').value = vehicle.transmission;
+                        document.getElementById('editPassengers').value = vehicle.passengers;
+                        document.getElementById('editGasType').value = vehicle.gasType;
+                        document.getElementById('editDescription').value = vehicle.description;
+                        document.getElementById('editImageUrl').value = vehicle.image;
+                        document.getElementById('editStatus').value = vehicle.status;
+                        
+                        // Show the edit modal
+                        const editVehicleModal = new bootstrap.Modal(document.getElementById('editVehicleModal'));
+                        editVehicleModal.show();
+                    }
+                }
+                
+                if (deleteBtn) {
+                    const vehicleCard = deleteBtn.closest('.vehicle-card');
+                    const plateNumber = vehicleCard.getAttribute('data-plate');
+                    
+                    if (confirm(`Are you sure you want to delete the vehicle with plate number ${plateNumber}?`)) {
+                        if (await deleteVehicle(plateNumber)) {
+                            // Remove the vehicle card from the DOM
+                            vehicleCard.closest('.col-md-4').remove();
+                            
+                            // Update vehicle stats
+                            const updatedVehicles = await fetchVehicles();
+                            updateVehicleStats(updatedVehicles);
+                        }
+                    }
+                }
+            });
+
+            // Helper function to update vehicle stats
+            function updateVehicleStats(vehicles) {
+                document.getElementById('totalVehiclesCount').textContent = vehicles.length;
+                document.getElementById('availableVehiclesCount').textContent = 
+                    vehicles.filter(v => v.status === 'Available').length;
+                document.getElementById('vehicleCategoriesCount').textContent = 
+                    [...new Set(vehicles.map(v => v.category))].length;
+            }
+
+            // Async function to delete a vehicle
+            async function deleteVehicle(plateNumber) {
+                try {
+                    const response = await fetch('/delete_vehicle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ plate: plateNumber })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to delete vehicle');
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting vehicle:', error);
+                    alert('Failed to delete vehicle. Please try again.');
+                    return false;
+                }
+            }
+
+            // Edit vehicle form submission
+            editVehicleForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const vehicle = {
+                    plate: document.getElementById('editPlateNumber').value,
+                    name: document.getElementById('editVehicleName').value,
+                    category: document.getElementById('editCategory').value,
+                    price: document.getElementById('editPrice').value,
+                    transmission: document.getElementById('editTransmission').value,
+                    passengers: document.getElementById('editPassengers').value,
+                    gasType: document.getElementById('editGasType').value,
+                    description: document.getElementById('editDescription').value,
+                    image: document.getElementById('editImageUrl').value,
+                    status: document.getElementById('editStatus').value
+                };
+
+                if (await updateVehicle(vehicle)) {
+                    // Multiple methods to close the modal
+                    const editVehicleModalElement = document.getElementById('editVehicleModal');
+                    
+                    // Method 1: Using Bootstrap's modal method
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        const editVehicleModal = bootstrap.Modal.getInstance(editVehicleModalElement);
+                        if (editVehicleModal) {
+                            editVehicleModal.hide();
+                        }
+                    }
+                    
+                    // Method 2: Fallback using jQuery
+                    if (window.$ && $('#editVehicleModal').modal) {
+                        $('#editVehicleModal').modal('hide');
+                    }
+                    
+                    // Method 3: Direct DOM manipulation
+                    editVehicleModalElement.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+
+                    // Re-render vehicles
+                    const updatedVehicles = await fetchVehicles();
+                    vehicleListings.innerHTML = '';
+                    updatedVehicles.forEach(vehicle => {
+                        const vehicleCard = document.createElement('div');
+                        vehicleCard.className = 'col-md-4';
+                        vehicleCard.innerHTML = `
+                            <div class="card vehicle-card h-100" data-plate="${vehicle.plate}">
+                                <div class="position-relative">
+                                    <img src="${vehicle.image}" class="card-img-top" alt="${vehicle.name}" style="height: 200px; object-fit: cover;">
+                                    <span class="badge position-absolute top-0 end-0 m-2 
+                                        ${vehicle.status === 'Available' ? 'bg-success' : 
+                                          vehicle.status === 'Booked' ? 'bg-warning' : 'bg-danger'}">
+                                        ${vehicle.status}
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">${vehicle.name}</h5>
+                                    <p class="card-text text-muted">${vehicle.description}</p>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Category</small>
+                                            <strong>${vehicle.category}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Price</small>
+                                            <strong>KMF ${vehicle.price}/day</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between">
+                                    <button class="btn btn-sm btn-outline-primary edit-btn">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        vehicleListings.appendChild(vehicleCard);
+                    });
+
+                    // Update vehicle stats
+                    function updateVehicleStats(vehicles) {
+                        document.getElementById('totalVehiclesCount').textContent = vehicles.length;
+                        document.getElementById('availableVehiclesCount').textContent = 
+                            vehicles.filter(v => v.status === 'Available').length;
+                        document.getElementById('vehicleCategoriesCount').textContent = 
+                            [...new Set(vehicles.map(v => v.category))].length;
+                    }
+                    updateVehicleStats(updatedVehicles);
+                }
+            });
+
+            // Add vehicle form submission
+            addVehicleForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const vehicle = {
+                    plate: document.getElementById('addVehiclePlate').value,
+                    name: document.getElementById('addVehicleName').value,
+                    category: document.getElementById('addCategory').value,
+                    price: document.getElementById('addPrice').value,
+                    transmission: document.getElementById('addTransmission').value,
+                    passengers: document.getElementById('addPassengers').value,
+                    gasType: document.getElementById('addGasType').value,
+                    description: document.getElementById('addDescription').value,
+                    image: document.getElementById('addImageUrl').value,
+                    status: document.getElementById('addStatus').value
+                };
+
+                if (await addVehicle(vehicle)) {
+                    // Immediately reload the page after successful vehicle addition
+                    location.reload();
+                }
+            });
+
+            // Clear vehicles button
+            const clearVehiclesBtn = document.getElementById('clearVehiclesBtn');
+            clearVehiclesBtn.addEventListener('click', async function() {
+                if (confirm('Are you absolutely sure you want to delete ALL added vehicles? This cannot be undone.')) {
+                    if (await clearVehicles()) {
+                        // Re-render (which will now show an empty list)
+                        vehicleListings.innerHTML = '';
+                    }
+                }
+            });
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+        }
+    </script>
+</body>
+</html>
