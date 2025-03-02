@@ -7,7 +7,8 @@
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
 }
 
 .modal-backdrop {
@@ -24,11 +25,12 @@
     background-color: #fefefe;
     margin: 40px auto;
     padding: 30px;
-    border-radius: 8px;
+    border-radius: 12px;
     max-width: 800px;
     position: relative;
     width: 90%;
     z-index: 1050;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Ensure buttons stay above modal */
@@ -45,16 +47,16 @@ body.modal-open .book-transfer {
 }
 
 .close-modal {
-    position: fixed;
+    position: absolute;
     right: 20px;
     top: 20px;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
     color: #fff;
     cursor: pointer;
     background-color: #dc3545;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -72,11 +74,11 @@ body.modal-open .book-transfer {
 
 @media (max-width: 850px) {
     .close-modal {
-        right: 15px;
-        top: 15px;
-        width: 48px;
-        height: 48px;
-        font-size: 32px;
+        right: 10px;
+        top: 10px;
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
         background-color: #dc3545;
         border: 3px solid #fff;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
@@ -86,6 +88,7 @@ body.modal-open .book-transfer {
         margin: 60px 15px 20px;
         padding: 20px;
         width: calc(100% - 30px);
+        border-radius: 8px;
     }
 
     .modal {
@@ -114,6 +117,7 @@ form {
     width: 100%;
     flex-wrap: wrap;
     background: transparent;
+    gap: 15px;
 }
 
 .radio-group {
@@ -129,6 +133,7 @@ label {
     font-weight: bold;
     flex: 1;
     min-width: 150px;
+    color: #333;
 }
 
 input[type="text"], 
@@ -138,19 +143,30 @@ input[type="time"],
 input[type="number"],
 select {
     width: 70%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, 
+input[type="tel"]:focus, 
+input[type="date"]:focus, 
+input[type="time"]:focus, 
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
 }
 
 .form-group select {
     width: 70%;
-}
-
-.form-group select:focus {
-    outline: none;
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M1 4l5 5 5-5z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
 }
 
 input[type="submit"] {
@@ -158,16 +174,20 @@ input[type="submit"] {
     color: white;
     border: none;
     padding: 15px 30px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
     max-width: 400px;
     margin-top: 30px;
     font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 input[type="submit"]:hover {
     background-color: var(--bs-primary-darker);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .error-message {
@@ -177,6 +197,7 @@ input[type="submit"]:hover {
     display: none;
     width: 100%;
     text-align: right;
+    animation: fadeIn 0.3s ease;
 }
 
 #successMessage {
@@ -188,17 +209,30 @@ input[type="submit"]:hover {
     padding: 15px;
     border-radius: 5px;
     font-weight: bold;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 @media (max-width: 850px) {
     .form-group {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
     }
 
     label {
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         margin-right: 0;
+        text-align: left;
+        width: 100%;
     }
 
     input[type="text"], 
@@ -208,76 +242,29 @@ input[type="submit"]:hover {
     input[type="number"],
     select {
         width: 100%;
+        padding: 12px;
     }
 
     .form-group select {
         width: 100%;
     }
 
-    .radio-group {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .radio-group label {
-        flex: 1;
-        min-width: 140px;
-        justify-content: center;
+    input[type="submit"] {
+        padding: 15px 20px;
+        font-size: 1em;
     }
 }
 
 @media (max-width: 480px) {
     .modal-content {
-        margin: 60px 10px 15px;
+        margin: 40px 10px 20px;
         padding: 15px;
     }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    input[type="submit"] {
-        padding: 12px 20px;
-        margin-top: 20px;
-    }
-}
-
-@media (max-width: 600px) {
-    .modal-content {
-        margin: 10px;
-        padding: 15px;
-    }
-
-    form {
-        max-width: 100%;
-    }
-
-    .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    label {
-        margin-bottom: 5px;
-    }
-
-    input[type="text"], 
-    input[type="tel"], 
-    input[type="date"], 
-    input[type="time"], 
-    input[type="number"],
-    select {
-        width: 100%;
-    }
-
-    .radio-group {
-        gap: 10px;
-        padding: 10px 5px;
-    }
-
-    .radio-group label {
-        padding: 6px 12px;
-        font-size: 14px;
+    .close-modal {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
     }
 }
 

@@ -533,5 +533,50 @@
         // Update counts when page loads
         document.addEventListener('DOMContentLoaded', updateCategoryCounts);
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Navbar Close Functionality
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            const body = document.body;
+
+            // Close navbar when clicking outside on mobile screens
+            body.addEventListener('click', function(event) {
+                // Check if navbar is open and screen is mobile
+                if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                    // Check if click is outside navbar, excluding language dropdown
+                    if (!event.target.closest('.navbar') || 
+                        (event.target.closest('.navbar') && 
+                         !event.target.closest('#languageDropdown') && 
+                         !event.target.closest('.dropdown-menu'))) {
+                        navbarToggler.click(); // Simulate navbar toggle button click
+                    }
+                }
+            });
+
+            // Prevent navbar toggle from propagating to body click event
+            navbarToggler.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+
+            // Close navbar when nav links are clicked, except language dropdown
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(#languageDropdown)');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                        navbarToggler.click(); // Close navbar
+                    }
+                });
+            });
+
+            // Prevent language dropdown from closing navbar
+            const languageDropdown = document.getElementById('languageDropdown');
+            if (languageDropdown) {
+                languageDropdown.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent body click from closing navbar
+                });
+            }
+        });
+    </script>
 </body>
 </html>
