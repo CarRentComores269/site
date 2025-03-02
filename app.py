@@ -23,7 +23,11 @@ logging.basicConfig(level=logging.DEBUG,
                     ])
 
 # Create Flask app with explicit template and static folders
-app = Flask(__name__, template_folder='.', static_folder='.')
+app = Flask(__name__, 
+            template_folder='.', 
+            static_folder='static',  # Explicitly set static folder
+            static_url_path='')      # Serve static files from root
+
 app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798')
 
 # Ensure instance folder exists for database
@@ -180,34 +184,62 @@ class Booking(db.Model):
         db.UniqueConstraint('customer_name', 'vehicle_name', 'start_date', name='unique_booking'),
     )
 
-# Add database backup functionality
-import shutil
-from datetime import datetime
-
+# Robust Database Backup Function
 def backup_database(db_path='instance/carrent.db'):
     """
-    Create a backup of the SQLite database
-    
-    Args:
-        db_path (str): Path to the database file
+    Create a backup of the SQLite database with error handling
     """
+    import os
+    import shutil
+    from datetime import datetime
+
     try:
-        # Create backups directory if it doesn't exist
+        # Ensure instance directory exists
+        os.makedirs('instance', exist_ok=True)
+
+        # Create backup directory if it doesn't exist
         backup_dir = 'database_backups'
         os.makedirs(backup_dir, exist_ok=True)
-        
+
+        # If database doesn't exist, create an empty one
+        if not os.path.exists(db_path):
+            print(f"Database {db_path} does not exist. Creating an empty database.")
+            open(db_path, 'a').close()
+
         # Generate backup filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_filename = f'{backup_dir}/carrent_backup_{timestamp}.db'
-        
-        # Copy the database file
-        shutil.copy2(db_path, backup_filename)
-        
-        print(f"Database backed up successfully: {backup_filename}")
-        return backup_filename
+        backup_filename = f"{backup_dir}/carrent_backup_{timestamp}.db"
+
+        # Perform backup
+        try:
+            shutil.copy2(db_path, backup_filename)
+            print(f"Database backup created: {backup_filename}")
+        except Exception as copy_error:
+            print(f"Error creating database backup: {copy_error}")
+
     except Exception as e:
-        print(f"Error creating database backup: {e}")
-        return None
+        print(f"Unexpected error in database backup: {e}")
+
+# Modify to handle PostgreSQL and SQLite
+def safe_backup_database():
+    """
+    Safely attempt database backup based on current configuration
+    """
+    try:
+        # Check if using SQLite
+        if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+            backup_database()
+        else:
+            print("Skipping backup for non-SQLite database")
+    except Exception as e:
+        print(f"Error in safe database backup: {e}")
+
+# Schedule backup during app initialization
+with app.app_context():
+    try:
+        safe_backup_database()
+    except Exception as e:
+        print(f"Backup initialization error: {e}")
 
 # Create tables
 with app.app_context():
@@ -220,7 +252,7 @@ with app.app_context():
     print("Database tables ensured to exist.")
     
     # Automatically create a backup when the application starts
-    backup_database()
+    safe_backup_database()
 
 # Set logging level for Flask app
 app.logger.setLevel(logging.DEBUG)
@@ -662,8 +694,15 @@ def sales_management():
 # Add route to serve static files
 @app.route('/<path:filename>')
 def serve_static(filename):
-    root_dir = os.path.dirname(os.getcwd())
-    return send_from_directory(os.path.join(root_dir, 'CarRent Web Site'), filename)
+    """
+    Serve static files from the static directory
+    Handles CSS, JS, images, and other static assets
+    """
+    try:
+        return send_from_directory('static', filename)
+    except FileNotFoundError:
+        app.logger.error(f"Static file not found: {filename}")
+        return '', 404
 
 # Add route for index page
 @app.route('/')
