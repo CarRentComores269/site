@@ -11,6 +11,7 @@ import threading
 import time
 from datetime import datetime
 from sqlalchemy import text
+import shutil
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
@@ -279,18 +280,40 @@ def update_vehicle():
         }
     })
 
-@app.route('/delete_vehicle', methods=['POST'])
-def delete_vehicle():
-    data = request.json
-    vehicle = Vehicle.query.filter_by(plate=data['plate']).first()
+@app.route('/delete_vehicle/<int:vehicle_id>', methods=['POST'])
+def delete_vehicle(vehicle_id):
+    try:
+        # Find the vehicle
+        vehicle = Vehicle.query.get_or_404(vehicle_id)
+        
+        # Get the image path
+        upload_folder = app.config['UPLOAD_FOLDER']
+        
+        # Delete associated images
+        if vehicle.image:
+            try:
+                # Remove main image
+                main_image_path = os.path.join(upload_folder, vehicle.image)
+                if os.path.exists(main_image_path):
+                    os.remove(main_image_path)
+                
+                # Check for additional images
+                additional_images_path = os.path.join(upload_folder, f"{vehicle_id}_additional")
+                if os.path.exists(additional_images_path):
+                    shutil.rmtree(additional_images_path)
+            except Exception as e:
+                logging.error(f"Error deleting images for vehicle {vehicle_id}: {e}")
+        
+        # Delete vehicle from database
+        db.session.delete(vehicle)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'Vehicle deleted successfully'}), 200
     
-    if not vehicle:
-        return jsonify({'error': 'Vehicle not found'}), 404
-    
-    db.session.delete(vehicle)
-    db.session.commit()
-    
-    return jsonify({'message': 'Vehicle deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error deleting vehicle {vehicle_id}: {e}")
+        return jsonify({'success': False, 'message': 'Failed to delete vehicle'}), 500
 
 @app.route('/clear_vehicles', methods=['POST'])
 def clear_vehicles():
