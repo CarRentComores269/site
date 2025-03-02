@@ -34,33 +34,37 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Robust Database Connection
-def get_database_url():
-    # Priority order: Environment Variable, Hardcoded, Fallback
-    database_urls = [
-        os.environ.get('DATABASE_URL'),  # Render's default
-        os.environ.get('DB_CONNECTION_STRING'),  # Custom env var
+# Definitive Database URI Configuration
+def get_database_uri():
+    # Prioritized list of potential database URIs
+    potential_uris = [
+        os.environ.get('DATABASE_URL'),
+        os.environ.get('DB_CONNECTION_STRING'),
         f"postgresql://{os.environ.get('DB_USERNAME', 'carrent_user')}:"
         f"{os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs')}@"
         f"{os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com')}/"
         f"{os.environ.get('DB_NAME', 'carrent_ak7c')}?sslmode=require",
-        'sqlite:///instance/carrent.db'  # Absolute last resort
+        'sqlite:///instance/carrent.db'  # Absolute fallback
     ]
-    
-    for url in database_urls:
-        try:
-            # Validate URL
-            from sqlalchemy.engine.url import make_url
-            make_url(url)
-            logger.info(f"Attempting connection with URL: {url}")
-            return url
-        except Exception as e:
-            logger.warning(f"Invalid database URL: {url}. Error: {e}")
-    
-    raise ValueError("No valid database URL found")
 
-# Set database URL
-app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
+    # Validate and return the first valid URI
+    for uri in potential_uris:
+        if uri:
+            try:
+                from sqlalchemy.engine.url import make_url
+                make_url(uri)
+                print(f"Using database URI: {uri}")
+                return uri
+            except Exception as e:
+                print(f"Invalid URI {uri}: {e}")
+
+    # If no valid URI is found, raise a critical error
+    raise ValueError("No valid database URI could be constructed")
+
+# Set the database URI with absolute certainty
+app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
+
+# Ensure additional SQLAlchemy configurations
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
@@ -73,18 +77,23 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
-# Additional logging for connection debugging
-def log_sqlalchemy_events():
-    import logging
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
-log_sqlalchemy_events()
+# Fallback database initialization
+def init_db():
+    try:
+        db.create_all()
+        print("Database tables created successfully")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
 
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
+
+# Call initialization during app context
+with app.app_context():
+    init_db()
 
 # Vehicle Model matching localStorage structure
 class Vehicle(db.Model):
