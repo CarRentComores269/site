@@ -710,8 +710,10 @@ def serve_html_page(page):
             'dashboard', 'dashboard_en',
             
             # Special pages
-            'airport-transfer',
+            'airport-transfer', 'airport-transfer_en',
             'admin-login',
+            'bookings', 'bookings_en',
+            'sales_management', 'sales_management_en',
             
             # Potential additional variations
             'services', 'services_en',
@@ -738,7 +740,10 @@ def serve_html_page(page):
                 'index_en': 'index.html',
                 'rentals_en': 'rentals.html',
                 'contact_en': 'contact.html',
-                'dashboard_en': 'dashboard.html'
+                'dashboard_en': 'dashboard.html',
+                'airport-transfer_en': 'airport-transfer.html',
+                'bookings_en': 'bookings.html',
+                'sales_management_en': 'sales_management.html'
             }
             
             if normalized_page in fallback_pages:
@@ -782,7 +787,9 @@ def serve_static_or_page(filename):
         # Additional handling for special routes
         special_routes = {
             'airport-transfer.html': 'services.html',
-            'admin-login.html': 'dashboard.html'
+            'admin-login.html': 'dashboard.html',
+            'bookings.html': 'rentals.html',
+            'sales_management.html': 'dashboard.html'
         }
         
         if filename in special_routes:
@@ -814,8 +821,10 @@ def copy_html_files():
         'dashboard.html', 'dashboard_en.html',
         
         # Special pages
-        'airport-transfer.html',
+        'airport-transfer.html', 'airport-transfer_en.html',
         'admin-login.html',
+        'bookings.html', 'bookings_en.html',
+        'sales_management.html', 'sales_management_en.html',
         
         # Additional pages
         'services.html', 'services_en.html',
