@@ -29,12 +29,15 @@ app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798'
 # Ensure instance folder exists for database
 os.makedirs('instance', exist_ok=True)
 
-# Configure database for PostgreSQL and SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 
-    'postgresql:///carrent.db'
-)
+# Environment configuration and database URL
+app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'False') == 'True'
 
+# Robust database URL handling
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///instance/carrent.db')
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads/sales_vehicles'
 
