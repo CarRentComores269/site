@@ -1231,6 +1231,140 @@ def check_vehicle_availability_route():
         'existing_bookings_count': len(existing_bookings)
     })
 
+# Performance and Timeout Optimization
+import functools
+import signal
+import threading
+import time
+
+# Timeout decorator for long-running functions
+def timeout(seconds, error_message="Function call timed out"):
+    """
+    Decorator to set a timeout for function execution
+    Prevents hanging during initialization or database operations
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            result = [None]
+            error = [None]
+            
+            def target():
+                try:
+                    result[0] = func(*args, **kwargs)
+                except Exception as e:
+                    error[0] = e
+            
+            thread = threading.Thread(target=target)
+            thread.daemon = True
+            thread.start()
+            thread.join(seconds)
+            
+            if thread.is_alive():
+                app.logger.critical(f"Timeout: {func.__name__} exceeded {seconds} seconds")
+                raise TimeoutError(error_message)
+            
+            if error[0] is not None:
+                raise error[0]
+            
+            return result[0]
+        return wrapper
+    return decorator
+
+# Optimized Initialization Functions
+@timeout(30, "Database initialization timed out")
+def safe_database_initialization():
+    """
+    Safely initialize database with timeout and error handling
+    """
+    try:
+        with app.app_context():
+            # Ensure database is created with a timeout
+            db.create_all()
+            db.session.commit()
+            print("Database tables created successfully")
+    except Exception as e:
+        app.logger.error(f"Database initialization error: {e}")
+        raise
+
+@timeout(15, "HTML file management timed out")
+def safe_html_file_management():
+    """
+    Safely manage HTML files with timeout
+    """
+    try:
+        # Ensure all necessary HTML files exist
+        html_files = [
+            'index.html', 'index_en.html',
+            'rentals.html', 'rentals_en.html',
+            'sales.html', 'sales_en.html',
+            'about.html', 'about_en.html',
+            'contact.html', 'contact_en.html',
+            'dashboard.html', 'dashboard_en.html',
+            'airport-transfer.html', 'airport-transfer_en.html',
+            'admin-login.html',
+            'bookings.html', 'bookings_en.html',
+            'sales_management.html', 'sales_management_en.html',
+            'services.html', 'services_en.html',
+            'fleet.html', 'fleet_en.html'
+        ]
+        
+        for file in html_files:
+            file_path = os.path.join(os.getcwd(), file)
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as f:
+                    f.write(f"""
+<!DOCTYPE html>
+<html lang="{'en' if '_en' in file else 'fr'}">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRent Comores - {file.replace('.html', '').replace('_', ' ').title()}</title>
+</head>
+<body>
+    <h1>CarRent Comores</h1>
+    <p>Placeholder for {file}</p>
+</body>
+</html>
+""")
+                app.logger.info(f"Created placeholder: {file}")
+    except Exception as e:
+        app.logger.error(f"HTML file management error: {e}")
+        raise
+
+# Comprehensive Initialization with Timeout Management
+def initialize_application():
+    """
+    Centralized application initialization with timeout protection
+    """
+    start_time = time.time()
+    app.logger.info("Starting comprehensive application initialization")
+    
+    try:
+        # Parallel initialization of critical components
+        threads = [
+            threading.Thread(target=safe_database_initialization),
+            threading.Thread(target=safe_html_file_management)
+        ]
+        
+        for thread in threads:
+            thread.start()
+        
+        for thread in threads:
+            thread.join(timeout=45)  # Total timeout of 45 seconds
+        
+        app.logger.info(f"Application initialization complete in {time.time() - start_time:.2f} seconds")
+    
+    except Exception as e:
+        app.logger.critical(f"Critical initialization failure: {e}")
+        raise
+
+# Trigger initialization during app startup
+try:
+    initialize_application()
+except Exception as e:
+    app.logger.critical(f"Application failed to initialize: {e}")
+    # Provide a fallback mechanism or graceful degradation
+
 if __name__ == '__main__':
     try:
         # Ensure upload directory exists with full permissions

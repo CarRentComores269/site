@@ -1,34 +1,29 @@
 services:
   - type: web
-    name: carrent-comores
+    name: carrent-site
     env: python3.10
     buildCommand: pip install -r requirements.txt
-    startCommand: flask db upgrade && gunicorn app:app
+    startCommand: gunicorn --workers 2 --timeout 120 --worker-class gevent app:app
     envVars:
-      - key: SECRET_KEY
-        value: 265afb09533257ad9db63f7eadc3f798
-      - key: FLASK_DEBUG
-        value: "False"
-      
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: GUNICORN_WORKERS
+        value: 2
+      - key: GUNICORN_TIMEOUT
+        value: 120
       # Database Connection Configurations
       - key: DATABASE_URL
         value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c
-      
       - key: DB_CONNECTION_STRING
         value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c?sslmode=require
-      
       - key: DB_USERNAME
         value: carrent_user
-      
       - key: DB_PASSWORD
         value: WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs
-      
       - key: DB_HOST
         value: dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com
-      
       - key: DB_NAME
         value: carrent_ak7c
-      
       - key: SQLALCHEMY_DATABASE_URI
         value: postgresql://carrent_user:WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs@dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com/carrent_ak7c?sslmode=require
 
