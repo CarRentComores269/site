@@ -1,0 +1,326 @@
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 800px;
+    position: relative;
+    width: 90%;
+    z-index: 1050;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure buttons stay above modal */
+.btn-primary,
+.book-transfer {
+    position: relative;
+    z-index: 1060 !important;
+}
+
+/* When modal is open, adjust button z-index */
+body.modal-open .btn-primary,
+body.modal-open .book-transfer {
+    z-index: 1030 !important;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    background-color: #dc3545;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1051;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 2px solid #fff;
+}
+
+.close-modal:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+@media (max-width: 850px) {
+    .close-modal {
+        right: 10px;
+        top: 10px;
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+        background-color: #dc3545;
+        border: 3px solid #fff;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-content {
+        margin: 60px 15px 20px;
+        padding: 20px;
+        width: calc(100% - 30px);
+        border-radius: 8px;
+    }
+
+    .modal {
+        padding: 0;
+    }
+}
+
+/* Form Styles */
+.form-container {
+    width: 100%;
+}
+
+form {
+    background: transparent;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+    background: transparent;
+    gap: 15px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+    width: 100%;
+}
+
+label {
+    margin-right: 10px;
+    font-weight: bold;
+    flex: 1;
+    min-width: 150px;
+    color: #333;
+}
+
+input[type="text"], 
+input[type="tel"], 
+input[type="date"], 
+input[type="time"], 
+input[type="number"],
+select {
+    width: 70%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, 
+input[type="tel"]:focus, 
+input[type="date"]:focus, 
+input[type="time"]:focus, 
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+}
+
+.form-group select {
+    width: 70%;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M1 4l5 5 5-5z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+input[type="submit"] {
+    background-color: var(--bs-primary);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 30px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+input[type="submit"]:hover {
+    background-color: var(--bs-primary-darker);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.error-message {
+    color: var(--bs-danger);
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: none;
+    width: 100%;
+    text-align: right;
+    animation: fadeIn 0.3s ease;
+}
+
+#successMessage {
+    display: none;
+    color: var(--bs-success);
+    text-align: center;
+    margin-top: 20px;
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 850px) {
+    .form-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    label {
+        margin-bottom: 8px;
+        margin-right: 0;
+        text-align: left;
+        width: 100%;
+    }
+
+    input[type="text"], 
+    input[type="tel"], 
+    input[type="date"], 
+    input[type="time"], 
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .form-group select {
+        width: 100%;
+    }
+
+    input[type="submit"] {
+        padding: 15px 20px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        margin: 40px 10px 20px;
+        padding: 15px;
+    }
+
+    .close-modal {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+    }
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border: 2px solid var(--bs-primary);
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    color: var(--bs-primary);
+}
+
+.radio-group input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    outline: none;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+}
+
+.radio-group input[type="radio"]:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.radio-group input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-group label:has(input[type="radio"]:checked) {
+    background-color: var(--bs-primary);
+    color: white;
+}

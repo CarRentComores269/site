@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventes de Voitures - CarRent Comores</title>
+    <title>Car Sales - CarRent Comores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -47,30 +47,30 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Accueil</a>
+                        <a class="nav-link" href="index_en.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="rentals.html">Location</a>
+                        <a class="nav-link" href="rentals_en.html">Rentals</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="sales.html">Vente</a>
+                        <a class="nav-link active" href="sales_en.html">Sales</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="airport-transfer.html">Transfert Aéroport</a>
+                        <a class="nav-link" href="airport-transfer_en.html">Airport Transfer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">À Propos de Nous</a>
+                        <a class="nav-link" href="about_en.html">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contactez-Nous</a>
+                        <a class="nav-link" href="contact_en.html">Contact Us</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-translate"></i> Langue
+                            <i class="bi bi-translate"></i> Language
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown" style="min-width: 80px;">
-                            <li><a class="dropdown-item" href="sales_en.html" onclick="changeLanguage('en')">English</a></li>
                             <li><a class="dropdown-item" href="sales.html" onclick="changeLanguage('fr')">Français</a></li>
+                            <li><a class="dropdown-item" href="sales_en.html" onclick="changeLanguage('en')">English</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -82,11 +82,11 @@
     <section class="py-5 bg-light">
         <div class="container">
             <div class="row filter-section">
-                <h2 class="text-center mb-4">Trouvez Votre Voiture Ideal</h2>
+                <h2 class="text-center mb-4">Find Your Ideal Car</h2>
                 <div class="col-md-3">
-                    <label class="form-label">Catégorie</label>
+                    <label class="form-label">Category</label>
                     <select id="categoryFilter" class="form-select">
-                        <option value="">Toutes les Catégories</option>
+                        <option value="">All Categories</option>
                         <option value="SUV">SUV</option>
                         <option value="Sedan">Sedan</option>
                         <option value="Pickup">Pick up</option>
@@ -96,9 +96,9 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Prix</label>
+                    <label class="form-label">Price</label>
                     <select id="priceFilter" class="form-select">
-                        <option value="">Tout le Prix</option>
+                        <option value="">All Prices</option>
                         <option value="500000-2500000">KMF 500,000 - KMF 2,500,000</option>
                         <option value="2500001-5500000">KMF 2,500,000 - KMF 5,500,000</option>
                         <option value="5500001-8000000">KMF 5,500,000 - KMF 8,000,000</option>
@@ -109,15 +109,15 @@
                 <div class="col-md-3">
                     <label class="form-label">Condition</label>
                     <select id="conditionFilter" class="form-select">
-                        <option value="">Toute la Condition</option>
-                        <option value="New">Nouveau</option>
-                        <option value="Used">Occasionnel</option>
+                        <option value="">All Conditions</option>
+                        <option value="New">New</option>
+                        <option value="Used">Used</option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Year</label>
                     <select id="yearFilter" class="form-select">
-                        <option value="">Any Year</option>
+                        <option value="">All Years</option>
                         <option value="2010">2010</option>
                         <option value="2011">2011</option>
                         <option value="2012">2012</option>
@@ -137,14 +137,14 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 text-center">
-                    <button id="applyFilters" class="btn btn-primary">Filtrer</button>
-                    <button id="resetFilters" class="btn btn-secondary ms-2">Réinitialiser</button>
+                    <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                    <button id="resetFilters" class="btn btn-secondary ms-2">Reset</button>
                 </div>
             </div>
 
             <!-- No Results Message -->
             <div id="noResultsMessage" class="alert alert-warning" role="alert">
-                Aucune voiture ne correspond à vos critères de filtre actuels. Essayez d'ajuster votre recherche.
+                No cars match your current filter criteria. Try adjusting your search.
             </div>
 
             <!-- Car Listings Section -->
@@ -160,10 +160,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5>CarRent Comores</h5>
-                    <p>Confort, Liberté, Aventure. Louez votre voiture idéal!</p>
+                    <p>Comfort, Freedom, Adventure. Rent your ideal car!</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <h5>Contactez-Nous</h5>
+                    <h5>Contact Us</h5>
                     <p>Email: agence@carrentcomores.site<br>Phone: (+269) 342 45 43 / (+269) 476 45 99</p>
                     
                     <!-- Social Media Icons -->
@@ -182,7 +182,7 @@
             </div>
             <div class="row mt-3 border-top pt-3">
                 <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2025 CarRent Comores. Tous droits réservés.</p>
+                    <p class="mb-0">&copy; 2025 CarRent Comores. All Rights Reserved.</p>
                 </div>
             </div>
         </div>
@@ -199,22 +199,22 @@
             const whatsappNumber = '+2694924019';
             
             // Detailed message construction
-            const message = `🚗 Intéressé par une demande de véhicule 🚗
+            const message = `🚗 Interested in Vehicle Inquiry 🚗
 
-Salaam CarRent Comores Team,
+Hello CarRent Comores Team,
 
-J'ai vu ce ${vehicle.make} sur votre page de vente:
+I saw this ${vehicle.make} on your sales page:
 
-📋 Details du véhicule:
-- Marque: ${vehicle.make}
+📋 Vehicle Details:
+- Make: ${vehicle.make}
 - Model: ${vehicle.model}
 - Year: ${vehicle.year}
 - Plate Number: ${vehicle.plateNumber}
 - Price: KMF ${vehicle.price.toLocaleString()}
 
-J'aimerais avoir plus d'informations sur ce véhicule. Pourriez-vous s'il vous plaît me fournir des détails supplémentaires?
+I would love to get more information about this vehicle. Could you please provide me with additional details?
 
-Merci,`;
+Thanks,`;
             
             // Encode message
             const encodedMessage = encodeURIComponent(message);
@@ -249,11 +249,11 @@ Merci,`;
                 } else {
                     // Desktop or unsupported device: show an alert
                     console.log('Desktop device, showing alert');
-                    alert(`Appelez notre service commerciale au ${phoneNumber} pour le véhicule avec le numéro de plaque: ${plateNumber}`);
+                    alert(`Call our sales team at ${phoneNumber} for vehicle with plate number: ${plateNumber}`);
                 }
             } catch (error) {
                 console.error('Error in callSeller:', error);
-                alert(`Impossible de lancer l'appel. Veuillez appeler ${phoneNumber} directement.`);
+                alert(`Unable to initiate call. Please call ${phoneNumber} directly.`);
             }
         }
 
@@ -324,7 +324,7 @@ Merci,`;
                         <img src="${vehicle.image || 'images/default-car.jpg'}" class="card-img-top car-image" alt="${vehicle.make} ${vehicle.model}">
                         <div class="card-body">
                             <h5 class="card-title">${vehicle.make} ${vehicle.model} ${vehicle.year}</h5>
-                            <p class="card-text">${vehicle.description || 'Aucune description disponible'}</p>
+                            <p class="card-text">${vehicle.description || 'No description available'}</p>
                             <div class="row">
                                 <div class="col-6">
                                     <ul class="list-unstyled">
@@ -344,7 +344,7 @@ Merci,`;
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="h5 mb-0">KMF ${vehicle.price.toLocaleString()}</span>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#carModal${vehicle.id}">
-                                    Voir les détails
+                                    View Details
                                 </button>
                             </div>
                         </div>
@@ -373,7 +373,7 @@ Merci,`;
                                     <div class="col-md-6">
                                         <img src="${vehicle.image || 'images/default-car.jpg'}" class="img-fluid" alt="${vehicle.make} ${vehicle.model}">
                                         <div class="mt-3">
-                                            <h6>Images additionnelles</h6>
+                                            <h6>Additional Images</h6>
                                             <div class="d-flex">
                                                 ${vehicle.additionalImages ? vehicle.additionalImages.map(img => 
                                                     `<img src="${img}" class="img-thumbnail me-2" style="width: 100px;" alt="Additional Image">`

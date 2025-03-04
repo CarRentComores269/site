@@ -4,27 +4,74 @@
 CarRent Comores is a responsive website for car rentals and sales in the Comoros Islands.
 
 ## Pages
-- French Versions:
-  - Home (`index.html`)
-  - Rentals (`rentals.html`)
-  - Sales (`sales.html`)
-  - About Us (`about.html`)
-  - Contact (`contact.html`)
-- English Versions:
-  - Home (`index_en.html`)
-  - Rentals (`rentals_en.html`)
-  - Sales (`sales_en.html`)
-  - About Us (`about_en.html`)
-  - Contact (`contact_en.html`)
-- Dashboard (`dashboard.html`)
-- Booking (`bookings.html`)
-- Sales Management (`sales_management.html`)
+- Home (`index.html`)
+- Rentals (`rentals.html`)
+- Sales (`sales.html`)
+- About Us (`about.html`)
+- Contact (`contact.html`)
 
 ## Technologies Used
 - HTML5
 - CSS3
 - Bootstrap 5
 - JavaScript
+
+## Project Setup
+
+### Virtual Environment Setup
+
+1. Create a virtual environment:
+```bash
+python3 -m venv venv
+```
+
+2. Activate the virtual environment:
+```bash
+source venv/bin/activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Initialize Database Migrations:
+```bash
+flask db init
+flask db migrate -m "Initial migration"
+flask db upgrade
+```
+
+5. Run the Application:
+```bash
+flask run
+```
+
+### Deactivate Virtual Environment
+When you're done working on the project:
+```bash
+deactivate
+```
+
+## Environment Variables
+Create a `.env` file with the following variables:
+- `DATABASE_URL`: PostgreSQL connection string
+- `SECRET_KEY`: Flask secret key
+- `DEBUG`: Set to True/False
+
+## Dependencies
+- Python 3.10+
+- Flask
+- SQLAlchemy
+- PostgreSQL
+
+## Deployment
+Configured for Render.com deployment with PostgreSQL database.
+
+## Troubleshooting
+- Ensure all dependencies are installed
+- Check database connection string
+- Verify Python version compatibility
 
 ## Getting Started
 1. Clone the repository
@@ -68,13 +115,6 @@ python app.py
 - Transparent backend replacement
 - No changes required in existing frontend code
 
-## Assets
-- **CSS**: 
-  - The project includes a custom CSS file for the booking form located at `css/booking-form.css`.
-  - The main CSS file is located in the `css/styles.css` directory, handling the overall styling of the website.
-- **Images**: All images are stored in the `assets` directory, including logos and testimonials.
-- **JavaScript**: The main JavaScript file is located in the `js/main.js` directory, handling interactivity and dynamic content.
-
 ## Customization
 - Update content in each HTML file
 - Modify styles in `css/styles.css`
@@ -85,11 +125,26 @@ Placeholder images are used. Replace them with your actual car and team images.
 
 ## Contact
 Email: agence@carrentcomores.site
-Phone: +269 342 4543
-# carrentcomores
-# carrentcomores
-# carrentcomores
-# carrentcomores
-# carrentcomores
-# carrentcomores
-# carrentcomores
+Phone: +269 342 45 43
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site
+# site

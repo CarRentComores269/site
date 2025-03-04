@@ -1,4 +1,12 @@
-/* Modal Styles */
+/* Advanced Booking Form Styles */
+:root {
+    --form-input-border-color: #ced4da;
+    --form-input-focus-color: #86b7fe;
+    --form-input-error-color: #dc3545;
+    --form-input-success-color: #198754;
+    --form-transition-speed: 0.2s;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -7,150 +15,130 @@
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    background-color: transparent;
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 1040;
+    overscroll-behavior: contain;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #ffffff;
     margin: 40px auto;
     padding: 30px;
-    border-radius: 8px;
+    border-radius: 15px;
     max-width: 800px;
-    position: relative;
     width: 90%;
-    z-index: 1050;
-}
-
-/* Ensure buttons stay above modal */
-.btn-primary,
-.book-transfer {
     position: relative;
-    z-index: 1060 !important;
+    z-index: 1050;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all var(--form-transition-speed) ease;
 }
 
-/* When modal is open, adjust button z-index */
-body.modal-open .btn-primary,
-body.modal-open .book-transfer {
-    z-index: 1030 !important;
+.modal-content:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 .close-modal {
-    position: fixed;
-    right: 20px;
-    top: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    background-color: #dc3545;
-    width: 44px;
-    height: 44px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 1051;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border: 2px solid #fff;
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--form-transition-speed) ease;
 }
 
 .close-modal:hover {
-    background-color: #c82333;
-    transform: scale(1.1);
+    background-color: #dc3545;
+    color: white;
+    transform: rotate(90deg);
 }
 
-@media (max-width: 850px) {
-    .close-modal {
-        right: 15px;
-        top: 15px;
-        width: 48px;
-        height: 48px;
-        font-size: 32px;
-        background-color: #dc3545;
-        border: 3px solid #fff;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .modal-content {
-        margin: 60px 15px 20px;
-        padding: 20px;
-        width: calc(100% - 30px);
-    }
-
-    .modal {
-        padding: 0;
-    }
-}
-
-/* Form Styles */
 .form-container {
     width: 100%;
-}
-
-form {
-    background: transparent;
-    width: 100%;
+    max-width: 600px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .form-group {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     margin-bottom: 20px;
-    width: 100%;
-    flex-wrap: wrap;
-    background: transparent;
+    position: relative;
 }
 
-.radio-group {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-    justify-content: center;
-    width: 100%;
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #495057;
+    transition: color var(--form-transition-speed) ease;
 }
 
-label {
-    margin-right: 10px;
-    font-weight: bold;
-    flex: 1;
-    min-width: 150px;
-}
-
-input[type="text"], 
-input[type="tel"], 
-input[type="date"], 
-input[type="time"], 
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
 input[type="number"],
 select {
-    width: 70%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid var(--form-input-border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all var(--form-transition-speed) ease;
+    appearance: none;
+    background-color: #fff;
+    background-image: linear-gradient(45deg, transparent 50%, #6c757d 50%), 
+                      linear-gradient(135deg, #6c757d 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
 }
 
-.form-group select {
-    width: 70%;
-}
-
-.form-group select:focus {
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="number"]:focus,
+select:focus {
     outline: none;
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    border-color: var(--form-input-focus-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Validation States */
+.form-group.has-error input,
+.form-group.has-error select {
+    border-color: var(--form-input-error-color);
+}
+
+.form-group.has-success input,
+.form-group.has-success select {
+    border-color: var(--form-input-success-color);
+}
+
+.error-message {
+    color: var(--form-input-error-color);
+    font-size: 0.8em;
+    margin-top: 5px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.form-group.has-error .error-message {
+    opacity: 1;
+    max-height: 50px;
 }
 
 input[type="submit"] {
@@ -158,182 +146,79 @@ input[type="submit"] {
     color: white;
     border: none;
     padding: 15px 30px;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 30px;
+    border-radius: 8px;
     font-size: 1.1em;
+    cursor: pointer;
+    transition: all var(--form-transition-speed) ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 input[type="submit"]:hover {
     background-color: var(--bs-primary-darker);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
-.error-message {
-    color: var(--bs-danger);
-    font-size: 0.8em;
-    margin-top: 5px;
-    display: none;
-    width: 100%;
-    text-align: right;
+input[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #successMessage {
-    display: none;
-    color: var(--bs-success);
-    text-align: center;
-    margin-top: 20px;
     background-color: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--form-input-success-color);
+    border: 1px solid var(--form-input-success-color);
     padding: 15px;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
 }
 
-@media (max-width: 850px) {
-    .form-group {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    label {
-        margin-bottom: 5px;
-        margin-right: 0;
-    }
-
-    input[type="text"], 
-    input[type="tel"], 
-    input[type="date"], 
-    input[type="time"], 
-    input[type="number"],
-    select {
-        width: 100%;
-    }
-
-    .form-group select {
-        width: 100%;
-    }
-
-    .radio-group {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .radio-group label {
-        flex: 1;
-        min-width: 140px;
-        justify-content: center;
-    }
+#successMessage.show {
+    opacity: 1;
+    max-height: 200px;
+    margin-top: 20px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .modal-content {
-        margin: 60px 10px 15px;
-        padding: 15px;
+        width: 95%;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
     }
 
-    .form-group {
-        margin-bottom: 15px;
+    .close-modal {
+        right: 10px;
+        top: 10px;
+        width: 35px;
+        height: 35px;
     }
 
     input[type="submit"] {
-        padding: 12px 20px;
-        margin-top: 20px;
-    }
-}
-
-@media (max-width: 600px) {
-    .modal-content {
-        margin: 10px;
-        padding: 15px;
-    }
-
-    form {
-        max-width: 100%;
-    }
-
-    .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    label {
-        margin-bottom: 5px;
-    }
-
-    input[type="text"], 
-    input[type="tel"], 
-    input[type="date"], 
-    input[type="time"], 
-    input[type="number"],
-    select {
         width: 100%;
-    }
-
-    .radio-group {
-        gap: 10px;
-        padding: 10px 5px;
-    }
-
-    .radio-group label {
-        padding: 6px 12px;
-        font-size: 14px;
+        padding: 12px 20px;
     }
 }
 
-.radio-group {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    justify-content: center;
-    width: 100%;
-    padding: 15px;
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
-.radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 8px 16px;
-    border: 2px solid var(--bs-primary);
-    border-radius: 25px;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-.radio-group input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--bs-primary);
-    border-radius: 50%;
-    outline: none;
-    position: relative;
-    margin: 0;
-    cursor: pointer;
-}
-
-.radio-group input[type="radio"]:checked {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
-}
-
-.radio-group input[type="radio"]:checked::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background-color: white;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.radio-group label:has(input[type="radio"]:checked) {
-    background-color: var(--bs-primary);
-    color: white;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
