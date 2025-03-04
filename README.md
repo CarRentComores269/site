@@ -68,6 +68,13 @@ python app.py
 - Transparent backend replacement
 - No changes required in existing frontend code
 
+## Assets
+- **CSS**: 
+  - The project includes a custom CSS file for the booking form located at `css/booking-form.css`.
+  - The main CSS file is located in the `css/styles.css` directory, handling the overall styling of the website.
+- **Images**: All images are stored in the `assets` directory, including logos and testimonials.
+- **JavaScript**: The main JavaScript file is located in the `js/main.js` directory, handling interactivity and dynamic content.
+
 ## Customization
 - Update content in each HTML file
 - Modify styles in `css/styles.css`
@@ -77,6 +84,7 @@ python app.py
 Placeholder images are used. Replace them with your actual car and team images.
 
 ## Contact
-Email: info@carrentcomores.km
-Phone: +269 333 4444
+Email: agence@carrentcomores.site
+Phone: +269 342 4543
+# carrentcomores
 # carrentcomores
