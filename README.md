@@ -4,11 +4,21 @@
 CarRent Comores is a responsive website for car rentals and sales in the Comoros Islands.
 
 ## Pages
-- Home (`index.html`)
-- Rentals (`rentals.html`)
-- Sales (`sales.html`)
-- About Us (`about.html`)
-- Contact (`contact.html`)
+- French Versions:
+  - Home (`index.html`)
+  - Rentals (`rentals.html`)
+  - Sales (`sales.html`)
+  - About Us (`about.html`)
+  - Contact (`contact.html`)
+- English Versions:
+  - Home (`index_en.html`)
+  - Rentals (`rentals_en.html`)
+  - Sales (`sales_en.html`)
+  - About Us (`about_en.html`)
+  - Contact (`contact_en.html`)
+- Dashboard (`dashboard.html`)
+- Booking (`bookings.html`)
+- Sales Management (`sales_management.html`)
 
 ## Technologies Used
 - HTML5
