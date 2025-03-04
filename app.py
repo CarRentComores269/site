@@ -23,10 +23,10 @@ logging.basicConfig(level=logging.DEBUG,
 
 # Create Flask app with explicit template and static folders
 app = Flask(__name__, template_folder='.', static_folder='.')
-app.secret_key = 'your_secret_key_here'
+app.secret_key = '3c0c195669557779ded02677b11ab02e'
 
 # Configure SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carrent.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://carrent:1VdaCIodZYkjDO2jcZbpzvQccrV1VbwM@dpg-cv37t00gph6c738mkgvg-a.oregon-postgres.render.com/carrent_db_gyvr'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads/sales_vehicles'
 
