@@ -16,63 +16,6 @@ CarRent Comores is a responsive website for car rentals and sales in the Comoros
 - Bootstrap 5
 - JavaScript
 
-## Project Setup
-
-### Virtual Environment Setup
-
-1. Create a virtual environment:
-```bash
-python3 -m venv venv
-```
-
-2. Activate the virtual environment:
-```bash
-source venv/bin/activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Initialize Database Migrations:
-```bash
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
-```
-
-5. Run the Application:
-```bash
-flask run
-```
-
-### Deactivate Virtual Environment
-When you're done working on the project:
-```bash
-deactivate
-```
-
-## Environment Variables
-Create a `.env` file with the following variables:
-- `DATABASE_URL`: PostgreSQL connection string
-- `SECRET_KEY`: Flask secret key
-- `DEBUG`: Set to True/False
-
-## Dependencies
-- Python 3.10+
-- Flask
-- SQLAlchemy
-- PostgreSQL
-
-## Deployment
-Configured for Render.com deployment with PostgreSQL database.
-
-## Troubleshooting
-- Ensure all dependencies are installed
-- Check database connection string
-- Verify Python version compatibility
-
 ## Getting Started
 1. Clone the repository
 2. Open `index.html` in a web browser
@@ -124,26 +67,6 @@ python app.py
 Placeholder images are used. Replace them with your actual car and team images.
 
 ## Contact
-Email: agence@carrentcomores.site
-Phone: +269 342 45 43
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
+Email: info@carrentcomores.km
+Phone: +269 333 4444
+# carrentcomores

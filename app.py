@@ -12,7 +12,6 @@ import time
 from datetime import datetime
 from sqlalchemy import text
 import shutil
-from flask_migrate import Migrate
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
@@ -23,107 +22,19 @@ logging.basicConfig(level=logging.DEBUG,
                     ])
 
 # Create Flask app with explicit template and static folders
-app = Flask(__name__, 
-            template_folder='.', 
-            static_folder='static',  # Explicitly set static folder
-            static_url_path='')      # Serve static files from root
+app = Flask(__name__, template_folder='.', static_folder='.')
+app.secret_key = 'your_secret_key_here'
 
-app.secret_key = os.environ.get('SECRET_KEY', '265afb09533257ad9db63f7eadc3f798')
-
-# Ensure instance folder exists for database
-os.makedirs('instance', exist_ok=True)
-
-# Enhanced Database Configuration Logging
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Definitive Database URI Configuration
-def get_database_uri():
-    # Prioritized list of potential database URIs
-    potential_uris = [
-        os.environ.get('DATABASE_URL'),
-        os.environ.get('DB_CONNECTION_STRING'),
-        f"postgresql://{os.environ.get('DB_USERNAME', 'carrent_user')}:"
-        f"{os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs')}@"
-        f"{os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com')}/"
-        f"{os.environ.get('DB_NAME', 'carrent_ak7c')}?sslmode=require",
-        'sqlite:///instance/carrent.db'  # Absolute fallback
-    ]
-
-    # Validate and return the first valid URI
-    for uri in potential_uris:
-        if uri:
-            try:
-                from sqlalchemy.engine.url import make_url
-                make_url(uri)
-                print(f"Using database URI: {uri}")
-                return uri
-            except Exception as e:
-                print(f"Invalid URI {uri}: {e}")
-
-    # If no valid URI is found, raise a critical error
-    raise ValueError("No valid database URI could be constructed")
-
-# Set the database URI with absolute certainty
-app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
-
-# Ensure additional SQLAlchemy configurations
+# Configure SQLite database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carrent.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,
-    'pool_recycle': 300,
-    'pool_size': 10,
-    'max_overflow': 20,
-    'connect_args': {
-        'sslmode': 'require',
-        'application_name': 'CarRent Comores App'
-    }
-}
+app.config['UPLOAD_FOLDER'] = 'uploads/sales_vehicles'
 
-# Robust Upload Folder Configuration
-def configure_upload_folder():
-    """
-    Configure upload folder with clear, simple path resolution
-    """
-    # Base upload folder path
-    base_path = os.path.join(os.path.dirname(__file__), 'uploads')
-    
-    # Ensure base upload folder exists
-    os.makedirs(base_path, exist_ok=True)
-    
-    # Create subdirectories
-    subdirs = ['sales_vehicles', 'rental_vehicles', 'temp']
-    for subdir in subdirs:
-        subdir_path = os.path.join(base_path, subdir)
-        os.makedirs(subdir_path, exist_ok=True)
-        app.logger.info(f"Created upload subdirectory: {subdir_path}")
-    
-    return base_path
-
-# Set upload folder configuration
-app.config['UPLOAD_FOLDER'] = configure_upload_folder()
-
-# Logging configuration
-app.logger.info(f"Upload folder configured: {app.config['UPLOAD_FOLDER']}")
-
-# Fallback database initialization
-def init_db():
-    try:
-        db.create_all()
-        print("Database tables created successfully")
-    except Exception as e:
-        print(f"Database initialization error: {e}")
+# Ensure upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
-
-# Initialize Flask-Migrate
-migrate = Migrate(app, db)
-
-# Call initialization during app context
-with app.app_context():
-    init_db()
 
 # Vehicle Model matching localStorage structure
 class Vehicle(db.Model):
@@ -210,62 +121,34 @@ class Booking(db.Model):
         db.UniqueConstraint('customer_name', 'vehicle_name', 'start_date', name='unique_booking'),
     )
 
-# Robust Database Backup Function
-def backup_database(db_path='instance/carrent.db'):
-    """
-    Create a backup of the SQLite database with error handling
-    """
-    import os
-    import shutil
-    from datetime import datetime
+# Add database backup functionality
+import shutil
+from datetime import datetime
 
+def backup_database(db_path='carrent.db'):
+    """
+    Create a backup of the SQLite database
+    
+    Args:
+        db_path (str): Path to the database file
+    """
     try:
-        # Ensure instance directory exists
-        os.makedirs('instance', exist_ok=True)
-
-        # Create backup directory if it doesn't exist
+        # Create backups directory if it doesn't exist
         backup_dir = 'database_backups'
         os.makedirs(backup_dir, exist_ok=True)
-
-        # If database doesn't exist, create an empty one
-        if not os.path.exists(db_path):
-            print(f"Database {db_path} does not exist. Creating an empty database.")
-            open(db_path, 'a').close()
-
+        
         # Generate backup filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_filename = f"{backup_dir}/carrent_backup_{timestamp}.db"
-
-        # Perform backup
-        try:
-            shutil.copy2(db_path, backup_filename)
-            print(f"Database backup created: {backup_filename}")
-        except Exception as copy_error:
-            print(f"Error creating database backup: {copy_error}")
-
+        backup_filename = f'{backup_dir}/carrent_backup_{timestamp}.db'
+        
+        # Copy the database file
+        shutil.copy2(db_path, backup_filename)
+        
+        print(f"Database backed up successfully: {backup_filename}")
+        return backup_filename
     except Exception as e:
-        print(f"Unexpected error in database backup: {e}")
-
-# Modify to handle PostgreSQL and SQLite
-def safe_backup_database():
-    """
-    Safely attempt database backup based on current configuration
-    """
-    try:
-        # Check if using SQLite
-        if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
-            backup_database()
-        else:
-            print("Skipping backup for non-SQLite database")
-    except Exception as e:
-        print(f"Error in safe database backup: {e}")
-
-# Schedule backup during app initialization
-with app.app_context():
-    try:
-        safe_backup_database()
-    except Exception as e:
-        print(f"Backup initialization error: {e}")
+        print(f"Error creating database backup: {e}")
+        return None
 
 # Create tables
 with app.app_context():
@@ -278,7 +161,7 @@ with app.app_context():
     print("Database tables ensured to exist.")
     
     # Automatically create a backup when the application starts
-    safe_backup_database()
+    backup_database()
 
 # Set logging level for Flask app
 app.logger.setLevel(logging.DEBUG)
@@ -717,234 +600,21 @@ def sales_management():
         return redirect(url_for('admin_login'))
     return send_file('sales_management.html')
 
-# Comprehensive HTML Page and Static File Routing
-@app.route('/<page>.html')
-def serve_html_page(page):
-    """
-    Dynamically serve HTML pages with enhanced flexibility
-    Supports multilingual, variations, and special pages
-    """
-    try:
-        # Expanded list of valid pages with variations
-        valid_pages = [
-            # Base pages
-            'index', 'index_en', 
-            'rentals', 'rentals_en', 
-            'sales', 'sales_en',
-            'about', 'about_en',
-            'contact', 'contact_en',
-            'dashboard', 'dashboard_en',
-            
-            # Special pages
-            'airport-transfer', 'airport-transfer_en',
-            'admin-login',
-            'bookings', 'bookings_en',
-            'sales_management', 'sales_management_en',
-            
-            # Potential additional variations
-            'services', 'services_en',
-            'fleet', 'fleet_en'
-        ]
-        
-        # Normalize page name to handle variations
-        normalized_page = page.lower()
-        
-        # Check if requested page is valid
-        if normalized_page not in valid_pages:
-            app.logger.warning(f"Attempted to access invalid page: {page}")
-            return render_template('index.html'), 404
-        
-        # Try to render the specific page, with fallback mechanisms
-        try:
-            # First, try exact match
-            return render_template(f'{normalized_page}.html')
-        except TemplateNotFound:
-            # Fallback to base language or index
-            fallback_pages = {
-                'sales_en': 'sales.html',
-                'about_en': 'about.html',
-                'index_en': 'index.html',
-                'rentals_en': 'rentals.html',
-                'contact_en': 'contact.html',
-                'dashboard_en': 'dashboard.html',
-                'airport-transfer_en': 'airport-transfer.html',
-                'bookings_en': 'bookings.html',
-                'sales_management_en': 'sales_management.html'
-            }
-            
-            if normalized_page in fallback_pages:
-                try:
-                    return render_template(fallback_pages[normalized_page])
-                except TemplateNotFound:
-                    pass
-            
-            # Final fallback to index
-            app.logger.error(f"Template not found: {page}.html")
-            return render_template('index.html'), 404
-    
-    except Exception as e:
-        app.logger.error(f"Error serving page {page}: {e}")
-        return render_template('index.html'), 500
-
-# Enhanced Static File Serving with Comprehensive Support
+# Add route to serve static files
 @app.route('/<path:filename>')
-def serve_static_or_page(filename):
-    """
-    Comprehensive static file and page serving
-    Handles CSS, JS, images, HTML pages with advanced error logging
-    """
-    try:
-        # Special handling for root route variations
-        if filename in ['', 'index', 'home']:
-            return index()
-        
-        # Check if it's a static file in static directories
-        static_dirs = ['css', 'js', 'assets']
-        for directory in static_dirs:
-            file_path = os.path.join('static', directory, filename)
-            if os.path.exists(file_path):
-                return send_from_directory(f'static/{directory}', filename)
-        
-        # Check if it's an HTML page
-        if filename.endswith('.html'):
-            page_name = filename.replace('.html', '')
-            return serve_html_page(page_name)
-        
-        # Additional handling for special routes
-        special_routes = {
-            'airport-transfer.html': 'services.html',
-            'admin-login.html': 'dashboard.html',
-            'bookings.html': 'rentals.html',
-            'sales_management.html': 'dashboard.html'
-        }
-        
-        if filename in special_routes:
-            return render_template(special_routes[filename])
-        
-        # If no match found, log and return 404
-        app.logger.warning(f"File not found: {filename}")
-        return index(), 404
-    
-    except Exception as e:
-        app.logger.error(f"Error serving {filename}: {e}")
-        return index(), 500
+def serve_static(filename):
+    root_dir = os.path.dirname(os.getcwd())
+    return send_from_directory(os.path.join(root_dir, 'CarRent Web Site'), filename)
 
-# Ensure comprehensive file availability
-def copy_html_files():
-    """
-    Ensure all HTML files are accessible for deployment
-    Includes variations and special pages
-    """
-    import shutil
-    
-    html_files = [
-        # Base pages
-        'index.html', 'index_en.html',
-        'rentals.html', 'rentals_en.html',
-        'sales.html', 'sales_en.html',
-        'about.html', 'about_en.html',
-        'contact.html', 'contact_en.html',
-        'dashboard.html', 'dashboard_en.html',
-        
-        # Special pages
-        'airport-transfer.html', 'airport-transfer_en.html',
-        'admin-login.html',
-        'bookings.html', 'bookings_en.html',
-        'sales_management.html', 'sales_management_en.html',
-        
-        # Additional pages
-        'services.html', 'services_en.html',
-        'fleet.html', 'fleet_en.html'
-    ]
-    
-    for file in html_files:
-        source = os.path.join(os.getcwd(), file)
-        if not os.path.exists(source):
-            app.logger.warning(f"HTML file not found: {file}")
-
-# Initialize file management during app startup
-with app.app_context():
-    copy_html_files()
-    app.logger.info("Comprehensive HTML file management initialized")
-
-# Root Route with Comprehensive Handling
+# Add route for index page
 @app.route('/')
 def index():
-    """
-    Serve the default index page with multiple fallback strategies
-    """
-    try:
-        # Priority order for index pages
-        index_pages = [
-            'index.html',      # Default French version
-            'index_en.html',   # English version fallback
-            'rentals.html'     # Final fallback
-        ]
-        
-        for page in index_pages:
-            try:
-                return render_template(page)
-            except TemplateNotFound:
-                app.logger.warning(f"Index page not found: {page}")
-        
-        # Absolute last resort
-        return "Welcome to CarRent Comores", 200
-    
-    except Exception as e:
-        app.logger.error(f"Critical error serving root route: {e}")
-        return "Service Unavailable", 503
-
-# Ensure index page is always available
-def ensure_index_page():
-    """
-    Create minimal index page if not exists
-    """
-    import os
-    
-    index_files = [
-        'index.html', 
-        'index_en.html'
-    ]
-    
-    for index_file in index_files:
-        file_path = os.path.join(os.getcwd(), index_file)
-        if not os.path.exists(file_path):
-            try:
-                with open(file_path, 'w') as f:
-                    f.write(f"""
-<!DOCTYPE html>
-<html lang="{'en' if '_en' in index_file else 'fr'}">
-<head>
-    <meta charset="UTF-8">
-    <title>CarRent Comores</title>
-</head>
-<body>
-    <h1>Welcome to CarRent Comores</h1>
-    <p>Temporary placeholder page</p>
-</body>
-</html>
-""")
-                app.logger.info(f"Created placeholder {index_file}")
-            except Exception as e:
-                app.logger.error(f"Failed to create {index_file}: {e}")
-
-# Initialize index page during app startup
-with app.app_context():
-    ensure_index_page()
-    app.logger.info("Index page initialization complete")
+    return render_template('index.html')
 
 # Route to add a new sales vehicle
 @app.route('/add_sales_vehicle', methods=['POST'])
 def add_sales_vehicle():
-    """
-    Enhanced route for adding sales vehicles with robust file handling
-    """
     try:
-        # Verify upload folder is configured
-        if 'UPLOAD_FOLDER' not in app.config:
-            app.logger.error("Upload folder not configured")
-            return jsonify({"error": "Upload configuration error"}), 500
-        
         # Extract form data
         make = request.form.get('make')
         model = request.form.get('model')
@@ -1264,140 +934,6 @@ def check_vehicle_availability_route():
         'available': True,
         'existing_bookings_count': len(existing_bookings)
     })
-
-# Performance and Timeout Optimization
-import functools
-import signal
-import threading
-import time
-
-# Timeout decorator for long-running functions
-def timeout(seconds, error_message="Function call timed out"):
-    """
-    Decorator to set a timeout for function execution
-    Prevents hanging during initialization or database operations
-    """
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            result = [None]
-            error = [None]
-            
-            def target():
-                try:
-                    result[0] = func(*args, **kwargs)
-                except Exception as e:
-                    error[0] = e
-            
-            thread = threading.Thread(target=target)
-            thread.daemon = True
-            thread.start()
-            thread.join(seconds)
-            
-            if thread.is_alive():
-                app.logger.critical(f"Timeout: {func.__name__} exceeded {seconds} seconds")
-                raise TimeoutError(error_message)
-            
-            if error[0] is not None:
-                raise error[0]
-            
-            return result[0]
-        return wrapper
-    return decorator
-
-# Optimized Initialization Functions
-@timeout(30, "Database initialization timed out")
-def safe_database_initialization():
-    """
-    Safely initialize database with timeout and error handling
-    """
-    try:
-        with app.app_context():
-            # Ensure database is created with a timeout
-            db.create_all()
-            db.session.commit()
-            print("Database tables created successfully")
-    except Exception as e:
-        app.logger.error(f"Database initialization error: {e}")
-        raise
-
-@timeout(15, "HTML file management timed out")
-def safe_html_file_management():
-    """
-    Safely manage HTML files with timeout
-    """
-    try:
-        # Ensure all necessary HTML files exist
-        html_files = [
-            'index.html', 'index_en.html',
-            'rentals.html', 'rentals_en.html',
-            'sales.html', 'sales_en.html',
-            'about.html', 'about_en.html',
-            'contact.html', 'contact_en.html',
-            'dashboard.html', 'dashboard_en.html',
-            'airport-transfer.html', 'airport-transfer_en.html',
-            'admin-login.html',
-            'bookings.html', 'bookings_en.html',
-            'sales_management.html', 'sales_management_en.html',
-            'services.html', 'services_en.html',
-            'fleet.html', 'fleet_en.html'
-        ]
-        
-        for file in html_files:
-            file_path = os.path.join(os.getcwd(), file)
-            if not os.path.exists(file_path):
-                with open(file_path, 'w') as f:
-                    f.write(f"""
-<!DOCTYPE html>
-<html lang="{'en' if '_en' in file else 'fr'}">
-<head>
-    <meta charset="UTF-8">
-    <title>CarRent Comores - {file.replace('.html', '').replace('_', ' ').title()}</title>
-</head>
-<body>
-    <h1>CarRent Comores</h1>
-    <p>Placeholder for {file}</p>
-</body>
-</html>
-""")
-                app.logger.info(f"Created placeholder: {file}")
-    except Exception as e:
-        app.logger.error(f"HTML file management error: {e}")
-        raise
-
-# Comprehensive Initialization with Timeout Management
-def initialize_application():
-    """
-    Centralized application initialization with timeout protection
-    """
-    start_time = time.time()
-    app.logger.info("Starting comprehensive application initialization")
-    
-    try:
-        # Parallel initialization of critical components
-        threads = [
-            threading.Thread(target=safe_database_initialization),
-            threading.Thread(target=safe_html_file_management)
-        ]
-        
-        for thread in threads:
-            thread.start()
-        
-        for thread in threads:
-            thread.join(timeout=45)  # Total timeout of 45 seconds
-        
-        app.logger.info(f"Application initialization complete in {time.time() - start_time:.2f} seconds")
-    
-    except Exception as e:
-        app.logger.critical(f"Critical initialization failure: {e}")
-        raise
-
-# Trigger initialization during app startup
-try:
-    initialize_application()
-except Exception as e:
-    app.logger.critical(f"Application failed to initialize: {e}")
-    # Provide a fallback mechanism or graceful degradation
 
 if __name__ == '__main__':
     try:

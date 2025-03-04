@@ -6,7 +6,7 @@
     <title>Car Rentals - CarRent Comores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <style>
         .car-card {
             transition: transform 0.3s ease;
@@ -40,7 +40,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index_en.html">
-                <img src="/assets/logo.jpg" alt="CarRent Comores Logo" width="60" height="60" class="me-3 rounded img-thumbnail">
+                <img src="assets/logo.jpg" alt="CarRent Comores Logo" width="60" height="60" class="me-3 rounded img-thumbnail">
                 CarRent Comores
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -637,51 +637,6 @@ Our team will review your booking and contact you soon.`);
             });
 
             initializeVehicles();
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Navbar Close Functionality
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const navbarCollapse = document.querySelector('.navbar-collapse');
-            const body = document.body;
-
-            // Close navbar when clicking outside on mobile screens
-            body.addEventListener('click', function(event) {
-                // Check if navbar is open and screen is mobile
-                if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
-                    // Check if click is outside navbar, excluding language dropdown
-                    if (!event.target.closest('.navbar') || 
-                        (event.target.closest('.navbar') && 
-                         !event.target.closest('#languageDropdown') && 
-                         !event.target.closest('.dropdown-menu'))) {
-                        navbarToggler.click(); // Simulate navbar toggle button click
-                    }
-                }
-            });
-
-            // Prevent navbar toggle from propagating to body click event
-            navbarToggler.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-
-            // Close navbar when nav links are clicked, except language dropdown
-            const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(#languageDropdown)');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
-                        navbarToggler.click(); // Close navbar
-                    }
-                });
-            });
-
-            // Prevent language dropdown from closing navbar
-            const languageDropdown = document.getElementById('languageDropdown');
-            if (languageDropdown) {
-                languageDropdown.addEventListener('click', function(event) {
-                    event.stopPropagation(); // Prevent body click from closing navbar
-                });
-            }
         });
     </script>
 </body>
