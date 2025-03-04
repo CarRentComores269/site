@@ -12,6 +12,7 @@ import time
 from datetime import datetime
 from sqlalchemy import text
 import shutil
+import psycopg2
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
