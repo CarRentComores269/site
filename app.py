@@ -180,7 +180,7 @@ class SalesVehicle(db.Model):
             'plateNumber': self.plate_number or '',
             'features': self.features.split(',') if self.features else [],
             'description': self.description or '',
-            'image': f'/uploads/sales_vehicles/{self.image}' if self.image else None,
+            'image': self.image or None,
             'transmission': self.transmission or '',
             'mileage': self.mileage,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
@@ -845,14 +845,10 @@ def copy_html_files():
         'about.html', 'about_en.html',
         'contact.html', 'contact_en.html',
         'dashboard.html', 'dashboard_en.html',
-        
-        # Special pages
         'airport-transfer.html', 'airport-transfer_en.html',
         'admin-login.html',
         'bookings.html', 'bookings_en.html',
         'sales_management.html', 'sales_management_en.html',
-        
-        # Additional pages
         'services.html', 'services_en.html',
         'fleet.html', 'fleet_en.html'
     ]
@@ -940,12 +936,6 @@ def add_sales_vehicle():
     Enhanced route for adding sales vehicles with robust file handling
     """
     try:
-        # Verify upload folder is configured
-        if 'UPLOAD_FOLDER' not in app.config:
-            app.logger.error("Upload folder not configured")
-            return jsonify({"error": "Upload configuration error"}), 500
-        
-        # Extract form data
         make = request.form.get('make')
         model = request.form.get('model')
         year = int(request.form.get('year'))
@@ -961,6 +951,7 @@ def add_sales_vehicle():
         description = request.form.get('description')
         transmission = request.form.get('transmission')
         mileage = request.form.get('vehicleMileage')  # Changed from 'mileage'
+        image_url = request.form.get('image_url')  # Get the image URL from the form
         
         # Debug print
         print("\n--- DEBUG: Adding Sales Vehicle ---")
@@ -970,14 +961,6 @@ def add_sales_vehicle():
         print(f"Price: {price}")
         print(f"Category: {category}")
         print("---\n")
-
-        # Handle image upload
-        image_filename = None
-        if 'image' in request.files:
-            image_filename = save_uploaded_file(
-                request.files['image'], 
-                app.config['UPLOAD_FOLDER']
-            )
 
         # Create new sales vehicle
         new_vehicle = SalesVehicle(
@@ -996,7 +979,7 @@ def add_sales_vehicle():
             description=description,
             transmission=transmission,
             mileage=int(mileage) if mileage and mileage.strip() else None,  # Convert to int if not empty
-            image=image_filename
+            image=image_url
         )
 
         # Add to database
@@ -1098,20 +1081,6 @@ def update_sales_vehicle(vehicle_id):
         if not vehicle:
             return jsonify({'error': 'Vehicle not found'}), 404
 
-        # Handle image upload
-        if 'image' in request.files:
-            # Delete old image if it exists
-            if vehicle.image:
-                old_image_path = os.path.join(app.config['UPLOAD_FOLDER'], vehicle.image)
-                if os.path.exists(old_image_path):
-                    os.remove(old_image_path)
-            
-            # Save new image
-            vehicle.image = save_uploaded_file(
-                request.files['image'], 
-                app.config['UPLOAD_FOLDER']
-            )
-
         # Update vehicle details
         vehicle.make = request.form.get('make')
         vehicle.model = request.form.get('model')
@@ -1128,6 +1097,7 @@ def update_sales_vehicle(vehicle_id):
         vehicle.description = request.form.get('description')
         vehicle.transmission = request.form.get('transmission')
         vehicle.mileage = int(request.form.get('vehicleMileage')) if request.form.get('vehicleMileage') and request.form.get('vehicleMileage').strip() else None
+        vehicle.image = request.form.get('image_url')
 
         db.session.commit()
         return jsonify({
