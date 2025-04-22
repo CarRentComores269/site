@@ -44,10 +44,10 @@ def get_database_uri():
     potential_uris = [
         os.environ.get('DATABASE_URL'),
         os.environ.get('DB_CONNECTION_STRING'),
-        f"postgresql://{os.environ.get('DB_USERNAME', 'carrent_user')}:"
-        f"{os.environ.get('DB_PASSWORD', 'WfBNpgfvZEcSoUTruafyT8wE9MFEYyhs')}@"
-        f"{os.environ.get('DB_HOST', 'dpg-cv21qj0gph6c73bbq1lg-a.oregon-postgres.render.com')}/"
-        f"{os.environ.get('DB_NAME', 'carrent_ak7c')}?sslmode=require",
+        f"postgresql://{os.environ.get('DB_USERNAME', 'carrent_db_oqvx_user')}:"
+        f"{os.environ.get('DB_PASSWORD', '9CK9OkdCmHKTjYNddSlth5eTsywZC8xv')}@"
+        f"{os.environ.get('DB_HOST', 'dpg-d038vcodl3ps739lbjag-a.oregon-postgres.render.com')}/"
+        f"{os.environ.get('DB_NAME', 'carrent_db_oqvx')}?sslmode=require",
         'sqlite:///instance/carrent.db'  # Absolute fallback
     ]
 
