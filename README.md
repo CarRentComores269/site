@@ -138,3 +138,4 @@ Before deploying to render.com:
 2. Make sure all favicon paths use relative paths without leading slashes.
 3. Ensure your app.py has a route for `/favicon.ico`.
 # site
+# site
