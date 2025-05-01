@@ -1369,6 +1369,12 @@ except Exception as e:
     app.logger.critical(f"Application failed to initialize: {e}")
     # Provide a fallback mechanism or graceful degradation
 
+# Add this route to properly serve favicon.ico requests
+@app.route('/favicon.ico')
+def favicon():
+    """Serve the favicon to browsers that request it by this name"""
+    return send_from_directory('assets', 'logo.jpg', mimetype='image/jpeg')
+
 if __name__ == '__main__':
     try:
         # Ensure upload directory exists with full permissions
