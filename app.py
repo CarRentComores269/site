@@ -325,7 +325,7 @@ def add_vehicle():
     
     # Check if vehicle with same plate already exists
     existing_vehicle = Vehicle.query.filter_by(plate=data['plate']).first()
-    if existing_vehicle:
+    if (existing_vehicle):
         return jsonify({'error': 'Vehicle with this plate already exists'}), 400
     
     new_vehicle = Vehicle(
@@ -1369,7 +1369,7 @@ except Exception as e:
     app.logger.critical(f"Application failed to initialize: {e}")
     # Provide a fallback mechanism or graceful degradation
 
-# Add this route to properly serve favicon.ico requests
+# Add explicit routes for favicon
 @app.route('/favicon.ico')
 def favicon():
     """Serve the favicon to browsers that request it by this name"""

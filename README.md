@@ -126,33 +126,15 @@ Placeholder images are used. Replace them with your actual car and team images.
 ## Contact
 Email: agence@carrentcomores.site
 Phone: +269 342 45 43
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
-# site
+
+## Deployment Instructions
+
+Before deploying to render.com:
+
+1. Run the favicon fix script to ensure compatibility with Safari:
+   ```
+   python fix_favicons.py
+   ```
+2. Make sure all favicon paths use relative paths without leading slashes.
+3. Ensure your app.py has a route for `/favicon.ico`.
 # site
